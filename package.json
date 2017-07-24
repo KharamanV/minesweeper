@@ -1,0 +1,32 @@
+{
+  "name": "minesweeper",
+  "version": "0.0.1",
+  "description": "Minesweeper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon index",
+    "build": "npx rimraf ./dist && npx webpack --config webpack.config.js --colors"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^1.26.1",
+    "express": "^4.15.3",
+    "js-yaml": "^3.9.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "rimraf": "^2.6.1",
+    "webpack": "^3.3.0",
+    "babel-preset-react": "^6.24.1"
+  }
+}
