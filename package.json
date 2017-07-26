@@ -5,17 +5,24 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon index",
-    "build": "npx rimraf ./dist && npx webpack --config webpack.config.js --colors"
+    "start": "npx webpack-dev-server --progress",
+    "server": "npx nodemon index.js",
+    "build": "npx webpack -p --colors --progress"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.16.2",
+    "body-parser": "^1.17.2",
     "config": "^1.26.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "express": "^4.15.3",
     "js-yaml": "^3.9.0",
+    "mongoose": "^4.11.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-hot-loader": "^3.0.0-beta.7",
     "react-redux": "^5.0.5",
     "redux": "^3.7.2"
   },
@@ -24,9 +31,12 @@
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "rimraf": "^2.6.1",
-    "webpack": "^3.3.0",
-    "babel-preset-react": "^6.24.1"
+    "clean-webpack-plugin": "^0.1.16",
+    "html-webpack-plugin": "^2.29.0",
+    "pm2": "^2.6.1",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
   }
 }
