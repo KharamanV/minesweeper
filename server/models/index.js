@@ -1,3 +1,3 @@
 module.exports = [
-  require('./Cat'),
+  require('./Game'),
 ];

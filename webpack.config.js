@@ -66,8 +66,8 @@ if (!ENV_PRODUCTION) {
       errors: true,
     },
     stats: {
-      cached: true,
-      cachedAssets: true,
+      cached: false,
+      cachedAssets: false,
       chunkModules: false,
       colors: true,
       hash: false,
