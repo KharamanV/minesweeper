@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx webpack-dev-server --progress",
-    "server": "npx nodemon index.js",
-    "build": "npx webpack -p --colors --progress"
+    "start": "webpack-dev-server --progress",
+    "server": "NODE_ENV=production nodemon index.js",
+    "build": "webpack -p --colors --progress"
   },
   "author": "",
   "license": "ISC",

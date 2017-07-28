@@ -26,7 +26,6 @@ router.post('/:id/reveal', (req, res, next) => {
 
 router.post('/', (req, res) => {
   const game = new Game();
-
 });
 
 module.exports = router;
