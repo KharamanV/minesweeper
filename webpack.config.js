@@ -46,7 +46,7 @@ if (!ENV_PRODUCTION) {
   config.entry.unshift(
     'react-hot-loader/patch',
     `webpack-dev-server/client?http://localhost:${PORT}`,
-    'webpack/hot/only-dev-server',
+    'webpack/hot/only-dev-server'
   );
 
   config.devServer = {

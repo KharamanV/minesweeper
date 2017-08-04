@@ -24,7 +24,8 @@
     "react-dom": "^15.6.1",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-redux": "^5.0.5",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "redux-saga": "^0.15.6"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -34,6 +35,10 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
     "html-webpack-plugin": "^2.29.0",
     "pm2": "^2.6.1",
     "webpack": "^3.4.1",
