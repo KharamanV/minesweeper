@@ -3,9 +3,11 @@ const { Schema } = mongoose;
 
 const SquareSchema = new Schema({
   isMine: { type: Boolean, default: false },
-  isResolved: { type: Boolean, default: false },
+  isRevealed: { type: Boolean, default: false },
+  // ???
   isFlagged: { type: Boolean, default: false },
   isEmpty: { type: Boolean, default: false },
+  // virtual mines count
   adjacentMinesCount: { type: Schema.Types.Mixed, default: null },
 });
 

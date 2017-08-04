@@ -13,9 +13,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    axios('/api/games/5979ea24c2723f6a56023867')
-      .then(({ data }) => this.setState(data))
-      .catch(console.error)
+    // 5979ea24c2723f6a56023867
   }
 
   render() {
