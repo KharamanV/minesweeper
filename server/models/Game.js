@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const Square = require('./Square');
+const  Position = require('./Position');
 
 const GameSchema = new Schema({
   startDate: { type: Date, default: Date.now, required: true },
   size: { type: Number, required: true },
-  // array of mines position
-  minesCount: { type: Number, required: true },
+  mines: [Position],
+  revealedSquares: [Position],
   isOver: { type: Boolean, default: false },
-  isWon: { type: Boolean, default: false },
-  board: [[Square]],
+  winner: { type: Schema.Types.ObjectId, default: null },
 });
 
 GameSchema.methods = {
