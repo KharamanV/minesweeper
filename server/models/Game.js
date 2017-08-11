@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const  Position = require('./Position');
 
 const GameSchema = new Schema({
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
+  mines: { type: [], default: [] },
+  visitedSquares: { type: [], default: [] },
   startDate: { type: Date, default: Date.now, required: true },
-  size: { type: Number, required: true },
-  mines: [Position],
-  revealedSquares: [Position],
   isOver: { type: Boolean, default: false },
   winner: { type: Schema.Types.ObjectId, default: null },
 });
@@ -26,6 +26,16 @@ GameSchema.methods = {
 
     return this.save()
       .then(game => Object.assign(game.board[x][y], { x, y }));
+  },
+
+  generateMines(count) {
+    const mines = [];
+
+    for (let i = 0; i < count; i++) {
+      this.mines.push();
+    }
+
+    return this;
   }
 };
 
