@@ -12,12 +12,8 @@ router.post('/', (req, res) => {
 
   return Preset.findOne({ _id: preset })
     .then(({ width, height, minesCount }) => {
-      const game = new Game({
-        width,
-        height,
-      });
-
-      return game.generateMines(minesCount)
+      return new Game({ width, height })
+        .generateMines(minesCount)
         .save()
         .then(game => res.json(game));
     })
@@ -28,23 +24,25 @@ router.get('/:id', (req, res) => {
   const {id: _id} = req.params;
 
   return Game.findOne({ _id })
-    .then(({ size, minesCount }) => res.json({ size, minesCount }))
-    .catch(({ message }) => res.status(500).json(message));
-
+    .then(({ width, height, mines }) => res.json({
+      width,
+      height,
+      minesCount: mines.length,
+    }))
+    .catch(err => res.status(500).json(err.message));
 });
 
-router.post('/:id/reveal', (req, res, next) => {
+router.post('/:id/reveal', (req, res) => {
   const { x, y } = req.query;
-  const {id: _id} = req.params;
 
   if (!x || !y) {
-    return next();
+    return res.status(400).json('Missing arguments');
   }
 
-  return Game.findOne({ _id })
-    .then(game => game.reveal(x, y))
-    .then(result => res.json(result))
-    .catch(({ message }) => res.status(500).json(message));
+  return Game.findOne({ _id: req.params.id })
+    .then(game => game.revealSquare(x, y))
+    .then(({ status, data }) => res.status(status).json(data))
+    .catch(err => res.status(500).json(err.message));
 });
 
 
