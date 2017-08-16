@@ -9,11 +9,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
 
 const config = {
-  entry: ['./client/index.js'],
+  entry: ['./client/index.jsx'],
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
@@ -30,9 +33,9 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        use: ['babel-loader', 'eslint-loader'],
       },
     ],
   },
