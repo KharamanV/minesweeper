@@ -5,7 +5,9 @@ const heights = [3, 4, 5, 9];
 const minesAmounts = [1, 2, 4, 5];
 const rewardRates = [0.75, 1.5, 3, 6];
 
-module.exports = () => {
+module.exports = async () => {
+  await Preset.remove();
+
   for (let i = 0; i < widths.length; i++) {
     const preset = new Preset({
       name: names[i],
@@ -15,6 +17,8 @@ module.exports = () => {
       rewardMultiplier: rewardRates[i],
     });
 
-    preset.save();
+    await preset.save();
   }
+
+  console.log('[Fixtures]: Presets created');
 };

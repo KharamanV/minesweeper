@@ -99,6 +99,7 @@ GameSchema.methods = {
   },
 };
 
+module.exports = mongoose.model('Game', GameSchema);
 
 function isPositionEqual(x, y) {
   return element => element.x === x && element.y === y;
@@ -115,5 +116,3 @@ function isMineAdjacent(x, y) {
     || mine.x === x - 1 && mine.y === y + 1
   )
 }
-
-module.exports = mongoose.model('Game', GameSchema);

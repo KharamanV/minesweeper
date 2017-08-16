@@ -45,5 +45,4 @@ router.post('/:id/reveal', (req, res) => {
     .catch(err => res.status(500).json(err.message));
 });
 
-
 module.exports = router;
