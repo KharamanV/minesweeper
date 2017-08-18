@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Game = mongoose.model('Game');
 const Preset = mongoose.model('Preset');
 
-router.post('/', (req, res) => {
+router.get('/', (req, res) => {
   const { preset } = req.query;
 
   if (!preset) {
@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
   return Preset.findOne({ _id: preset })
     .then(({ width, height, minesCount }) => {
       return new Game({ width, height })
-        .generateMines(minesCount)
+        .generateMines(minesCount, true)
         .save()
         .then(game => res.json(game));
     })

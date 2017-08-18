@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { getRandom2DArrayIndexes, generateBlankBoard } = require('../services/utils');
+const {
+  getRandom2DArrayIndexes,
+  generateBlankBoard,
+  getRandomInt,
+  getRandomArrayElement,
+} = require('../services/utils');
 
 const GameSchema = new Schema({
   width: { type: Number, required: true },
   height: { type: Number, required: true },
   // TODO: Add Position model with adjacentMines virtual
   mines: { type: [], default: [] },
+  patSquares: { type: [], default: [] },
   visitedSquares: { type: [], default: [] },
   startDate: { type: Date, default: Date.now, required: true },
   isOver: { type: Boolean, default: false },
@@ -70,19 +76,37 @@ GameSchema.methods = {
       && this.width > x
       && this.height > y
     );
-
   },
 
   /**
    * Randomly set mines on the board
    *
    * @param count
-   * @returns {Schema.methods}
+   * @param isPat
+   * @returns {*}
    */
-  generateMines(count) {
+  generateMines(count, isPat = false) {
     const { width, height } = this;
     const board = generateBlankBoard(width, height);
     let minesLeft = count;
+
+    if (isPat) {
+      const {
+        mines,
+        patSquares,
+        lockedRange,
+      } = generatePatSituation({ width, height, minesCount: count });
+
+      this.mines.push(mines);
+      this.patSquares.push(patSquares);
+      mines.forEach(mine => {
+        // Continue
+        const { x, y } = mine;
+        board[x][y] = false;
+      });
+
+      minesLeft -= mines.length;
+    }
 
     while (minesLeft > 0) {
       const { x, y } = getRandom2DArrayIndexes(width, height);
@@ -109,10 +133,76 @@ function isMineAdjacent(x, y) {
   return mine => (
     mine.x === x - 1 && mine.y === y - 1
     || mine.x === x && mine.y === y - 1
-    || mine.x === x + 1 && mine.y === y -1
+    || mine.x === x + 1 && mine.y === y - 1
     || mine.x === x + 1 && mine.y === y
     || mine.x === x + 1 && mine.y === y + 1
     || mine.x === x && mine.y === y + 1
     || mine.x === x - 1 && mine.y === y + 1
-  )
+  );
+}
+
+/**
+ * Returns mines in a specific location to form a stalemate
+ * @todo: Create a real generation algorithm instead of preset patterns
+ *
+ * @param options
+ * @returns {{mines: Array, patSquares: Array, lockedRange: *}}
+ */
+function generatePatSituation({ width, height, minesCount }) {
+  const isSmall = minesCount < 5 || width < 5 && height < 5;
+
+  return getSmallPatSituation(width, height);
+}
+
+function getSmallPatSituation(width, height) {
+  const situations = [
+    {
+      mines: [
+        { x: 1, y: height - 1, isPat: true },
+        { x: 2, y: height - 1 },
+        { x: 2, y: height - 2 },
+      ],
+      patSquares: [{ x: 0, y: height - 1 }],
+    },
+    {
+      mines: [
+        { x: 1, y: 0, isPat: true },
+        { x: 2, y: 0 },
+        { x: 2, y: 1 },
+      ],
+      patSquares: { x: 0, y: 0 },
+    },
+    {
+      mines: [
+        { x: 0, y: 1, isPat: true },
+        { x: 0, y: 2 },
+        { x: 1, y: 2 },
+      ],
+      patSquares: { x: 0, y: 0 },
+    }
+  ];
+
+  const randomSituation = getRandomArrayElement(situations);
+
+  return Object.assign(
+    randomSituation,
+    { lockedRange: getLockedRangeOfSituation(randomSituation, width, height) }
+  );
+}
+
+function getLockedRangeOfSituation({ mines, patSquares }, width, height) {
+  const items = mines.concat(patSquares);
+  const minX = items.reduce((min, curr) => min.x > curr.x ? curr : min);
+  const maxX = items.reduce((max, curr) => max.x < curr.x ? curr : max);
+  const minY = items.reduce((min, curr) => min.y > curr.y ? curr : min);
+  const maxY = items.reduce((max, curr) => max.y < curr.y ? curr : max);
+  const left = minX.x - 2;
+  const right = maxX.x + 2;
+  const top = minY.y - 2;
+  const bottom = maxY.y + 2;
+
+  return {
+    x: [left < 0 ? 0 : left, right >= width ? width - 1 : right],
+    y: [top < 0 ? 0 : top, bottom >= height ? height - 1 : bottom],
+  };
 }

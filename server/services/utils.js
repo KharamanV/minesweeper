@@ -1,6 +1,6 @@
 function getRandom2DArrayIndexes(width, height) {
-  const x = Math.floor(Math.random() * width);
-  const y = Math.floor(Math.random() * height);
+  const x = getRandomInt(0, width - 1);
+  const y = getRandomInt(0, height - 1);
 
   return { x, y };
 }
@@ -15,7 +15,17 @@ function generateBlankBoard(width, height) {
   return board;
 }
 
+function getRandomArrayElement(arr) {
+  return arr[getRandomInt(0, arr.length - 1)];
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 module.exports = {
   getRandom2DArrayIndexes,
   generateBlankBoard,
+  getRandomInt,
+  getRandomArrayElement,
 };
