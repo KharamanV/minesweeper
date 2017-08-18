@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 // import { setState } from '../actions';
 import Login from './Login';
 import Welcome from './Welcome';
+import Panel from './Panel';
 
 const App = props => (
   <div className="app">
     {props.username ? <Welcome /> : <Login />}
+    {props.username && <Panel />}
   </div>
 );
 App.propTypes = {
