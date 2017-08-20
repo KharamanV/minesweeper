@@ -5,11 +5,11 @@ function getRandom2DArrayIndexes(width, height) {
   return { x, y };
 }
 
-function generateBlankBoard(width, height) {
+function generate2DArray({ width, height, fill = null }) {
   const board = [];
 
   for (let i = 0; i < height; i++) {
-    board.push(new Array(width).fill(true));
+    board.push(new Array(width).fill(fill));
   }
 
   return board;
@@ -25,7 +25,7 @@ function getRandomInt(min, max) {
 
 module.exports = {
   getRandom2DArrayIndexes,
-  generateBlankBoard,
+  generate2DArray,
   getRandomInt,
   getRandomArrayElement,
 };

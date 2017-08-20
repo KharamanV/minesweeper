@@ -1,21 +1,29 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
+const { generate2DArray } = require('../../services/utils');
 const Game = mongoose.model('Game');
 const Preset = mongoose.model('Preset');
 
-router.get('/', (req, res) => {
-  const { preset } = req.query;
+router.post('/', (req, res) => {
+  const { preset } = req.body;
 
   if (!preset) {
     return res.sendStatus(400);
   }
 
+  const isPat = true;
+
   return Preset.findOne({ _id: preset })
     .then(({ width, height, minesCount }) => {
       return new Game({ width, height })
-        .generateMines(minesCount, true)
+        .generateMines(minesCount, isPat)
         .save()
-        .then(game => res.json(game));
+        .then(({ _id, width, height }) => res.json({
+          _id,
+          width,
+          height,
+          board: generate2DArray({ width, height }),
+        }));
     })
     .catch(err => res.status(500).json(err));
 });

@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {
   getRandom2DArrayIndexes,
-  generateBlankBoard,
-  getRandomInt,
+  generate2DArray,
   getRandomArrayElement,
 } = require('../services/utils');
 
@@ -87,7 +86,7 @@ GameSchema.methods = {
    */
   generateMines(count, isPat = false) {
     const { width, height } = this;
-    const board = generateBlankBoard(width, height);
+    const board = generate2DArray({ width, height, fill: true });
     let minesLeft = count;
 
     if (isPat) {
@@ -97,13 +96,14 @@ GameSchema.methods = {
         lockedRange,
       } = generatePatSituation({ width, height, minesCount: count });
 
-      this.mines.push(mines);
+      this.mines.push(...mines);
       this.patSquares.push(patSquares);
-      mines.forEach(mine => {
-        // Continue
-        const { x, y } = mine;
-        board[x][y] = false;
-      });
+
+      for (let i = lockedRange.y[0]; i <= lockedRange.y[1]; i++) {
+        for (let j = lockedRange.x[0]; j <= lockedRange.x[1]; j++) {
+          board[i][j] = false;
+        }
+      }
 
       minesLeft -= mines.length;
     }
