@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --progress",
     "server": "NODE_ENV=production nodemon index.js",
-    "build": "webpack -p --colors --progress"
+    "build": "webpack -p --colors --progress",
+    "fixtures": "node ./server/fixtures"
   },
   "author": "",
   "license": "ISC",
