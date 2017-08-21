@@ -25,7 +25,8 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: true }
 }))
-app.use(express.static('./public'));
+app.use(express.static('dist'));
+// app.use(express.static('./public'));
 app.use(passport.initialize());
 app.use(passport.session());
 

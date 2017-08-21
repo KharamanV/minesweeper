@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import App from './components/App';
 import configureStore from './configureStore';
 
-const store = configureStore({ username: null });
+const store = configureStore({ username: null, users: [], showAdd: false, showUserList: false });
 
 render(
   <Provider store={store}>

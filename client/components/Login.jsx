@@ -9,8 +9,8 @@ const SignIn = props => (
   <div className="app__signIn">
     Sign in
     <form className="app__form" onSubmit={e => props.signIn(e)} >
-      <input id="username" type="text" className="app__input" />
-      <input id="password" type="password" className="app__input" />
+      <input id="username" type="text" className="app__input" defaultValue="admin" />
+      <input id="password" type="password" className="app__input" defaultValue="admin" />
       <input type="submit" className="app__submit" />
     </form>
   </div>
