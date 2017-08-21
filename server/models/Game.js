@@ -35,6 +35,15 @@ GameSchema.methods = {
       return { status: 400, data: 'This square was already revealed' };
     }
 
+    const patSquare = this.patSquares.find(isPositionEqual(x, y));
+
+    if (patSquare) {
+      const patMineIndex = this.mines.findIndex(mine => mine.isPat);
+
+      this.mines.splice(patMineIndex, 1);
+      this.mines.unshift(patSquare);
+    }
+
     const mine = this.mines.find(isPositionEqual(x, y));
 
     if (mine) {
@@ -111,10 +120,10 @@ GameSchema.methods = {
     while (minesLeft > 0) {
       const { x, y } = getRandom2DArrayIndexes(width, height);
 
-      if (board[x][y]) {
+      if (board[y][x]) {
         this.mines.push({ x, y });
 
-        board[x][y] = false;
+        board[y][x] = false;
         minesLeft -= 1;
       }
     }
@@ -190,6 +199,14 @@ function getSmallPatSituation(width, height) {
   );
 }
 
+/**
+ * Returns range of 2D array of pat situations
+ *
+ * @param situation
+ * @param width
+ * @param height
+ * @returns {{x: [*,*], y: [*,*]}}
+ */
 function getLockedRangeOfSituation({ mines, patSquares }, width, height) {
   const items = mines.concat(patSquares);
   const minX = items.reduce((min, curr) => min.x > curr.x ? curr : min);

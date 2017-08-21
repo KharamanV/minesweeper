@@ -41,14 +41,14 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/:id/reveal', (req, res) => {
-  const { x, y } = req.query;
+  const { x, y } = req.body;
 
   if (!x || !y) {
     return res.status(400).json('Missing arguments');
   }
 
   return Game.findOne({ _id: req.params.id })
-    .then(game => game.revealSquare(x, y))
+    .then(game => game.revealSquare(Number(x), Number(y)))
     .then(({ status, data }) => res.status(status).json(data))
     .catch(err => res.status(500).json(err.message));
 });
