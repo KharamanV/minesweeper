@@ -137,6 +137,48 @@ GameSchema.methods = {
     return this;
   },
 
+  getSafeSquaresAround(x, y) {
+    const squares = [{ x, y, adjacentMinesCount: 0 }];
+    const visitedEmptySquares = [{ x, y }];
+    const adjacentCoordinates = [
+      { x: -1, y: -1 },
+      { x: 0, y: -1 },
+      { x: 1, y: -1 },
+      { x: -1, y: 0 },
+      { x: 1, y: 0 },
+      { x: -1, y: 1 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+    ];
+
+    do {
+      let { x, y } = visitedEmptySquares.pop();
+
+      adjacentCoordinates.forEach((adj, i) => {
+        x = x + adj.x;
+        y = y + adj.y;
+
+        if (!this.isArgumentsValid(x, y)) {
+          return;
+        }
+
+        const adjacentMinesCount = this.getAdjacentMinesCount(x, y);
+
+        squares.push({ x, y, adjacentMinesCount });
+
+        if (adjacentMinesCount === 0 && !this.mines.find(isPositionEqual(x, y))) {
+          visitedEmptySquares.push({ x, y });
+        }
+
+        console.log({ x, y });
+      });
+    } while (visitedEmptySquares.length !== 0);
+
+    console.log('out');
+
+    return squares;
+  }
+
   /**
    * Reveals all adjacent squares when clicking on empty square (recursively)
    *
