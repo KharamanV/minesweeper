@@ -21,30 +21,30 @@ passport.use(new LocalStrategy(function(username, password, done) {
   });
 }));
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser((id, done) => {
   User.findById(id, function(err, user) {
     done(err, user);
   });
 });
 
 
-router.post("/", function(req, res, next) {
+router.post('/', (req, res, next) => {
   passport.authenticate('local', function(err, user, info) {
     if (err) {
       return next(err);
     }
     if (!user) {
-      return res.send(JSON.stringify({status: 'error', text: 'wrong credentials'}));;
+      return res.json({status: 'error', text: 'wrong credentials'});
     }
     req.logIn(user, function(err) {
       if (err) {
         return next(err);
       }
-      return res.send(JSON.stringify({status: 'success', username: req.user.username}));
+      return res.json({status: 'success', username: req.user.username});
     });
   })(req, res, next);
 });

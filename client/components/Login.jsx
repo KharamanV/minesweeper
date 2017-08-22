@@ -31,7 +31,8 @@ const mapDispatchToProps = dispatch => ({
         alert(message.text);
       }
     });
-  } });
+  },
+});
 const mapStateToProps = state => ({
   username: state.username,
 });
