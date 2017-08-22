@@ -45,24 +45,23 @@ GameSchema.methods = {
     }
 
     const mine = this.mines.find(isPositionEqual(x, y));
+    const adjacentMinesCount = this.getAdjacentMinesCount(x, y);
+    const isEmpty = !mine && adjacentMinesCount === 0;
+    const data = { x, y, adjacentMinesCount, isMine: !!mine };
+
+    this.visitedSquares.push({ x, y });
 
     if (mine) {
       // TODO: Add winner
       this.isOver = true;
     }
 
-    this.visitedSquares.push({ x, y });
+    if (isEmpty) {
+      data.revealedSquares = this.getSafeSquaresAround(x, y);
+    }
 
     return this.save()
-      .then(game => ({
-        status: 200,
-        data: {
-          x,
-          y,
-          isMine: !!mine,
-          adjacentMinesCount: !mine ? this.getAdjacentMinesCount(x, y) : null,
-        },
-      }));
+      .then(() => ({ data, status: 200 }));
   },
 
   /**
@@ -130,6 +129,48 @@ GameSchema.methods = {
 
     return this;
   },
+
+  getSafeSquaresAround(x, y) {
+    const squares = [{ x, y, adjacentMinesCount: 0 }];
+    const visitedEmptySquares = [{ x, y }];
+    const adjacentCoordinates = [
+      { x: -1, y: -1 },
+      { x: 0, y: -1 },
+      { x: 1, y: -1 },
+      { x: -1, y: 0 },
+      { x: 1, y: 0 },
+      { x: -1, y: 1 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+    ];
+
+    do {
+      let { x, y } = visitedEmptySquares.pop();
+
+      adjacentCoordinates.forEach((adj, i) => {
+        x = x + adj.x;
+        y = y + adj.y;
+
+        if (!this.isArgumentsValid(x, y)) {
+          return;
+        }
+
+        const adjacentMinesCount = this.getAdjacentMinesCount(x, y);
+
+        squares.push({ x, y, adjacentMinesCount });
+
+        if (adjacentMinesCount === 0 && !this.mines.find(isPositionEqual(x, y))) {
+          visitedEmptySquares.push({ x, y });
+        }
+
+        console.log({ x, y });
+      });
+    } while (visitedEmptySquares.length !== 0);
+
+    console.log('out');
+
+    return squares;
+  }
 };
 
 module.exports = mongoose.model('Game', GameSchema);
