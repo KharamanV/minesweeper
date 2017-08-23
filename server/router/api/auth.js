@@ -55,14 +55,14 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({
     clientID: "732865366871-dp8jog2htk1bgaqte6heb986lk91mhdb.apps.googleusercontent.com",
     clientSecret: "tq5TgpcKemwtVP3upOcjOpuY",
-    callbackURL: "http://127.0.0.1:3000/auth/google/callback"
+    callbackURL: "http://localhost:3000/api/auth/google/callback"
   },
-  function(accessToken, refreshToken, profile, cb) {
+  function(accessToken, refreshToken, profile, done) {
     User.findOne({googleId: profile.id}, function(err, user) {
       if (err) { return done(err); }
       if (!user) {
         user = new User({
-          username: 'fb',
+          username: 'gl',
           password: '0',
           googleId: profile.id,
           role: 'player',
@@ -100,9 +100,20 @@ failureRedirect: '/login' }));
 router.get('/google',
   passport.authenticate('google', { scope: ['profile'] }));
 
-router.get('/google/callback',
-passport.authenticate('google', { successRedirect: '/',
-failureRedirect: '/login' }));
+// router.get('/google/callback',
+//   passport.authenticate('google', { failureRedirect: '/login' }),
+//   function(req, res) {
+//     console.log("redirect here");
+//     res.redirect('/');
+//   });
+
+router.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/login' ,
+  })
+);
 
 router.get('/', (req, res) => {
   res.json({test: true, session: req.session});
