@@ -76,6 +76,13 @@ GameSchema.methods = {
       .length;
   },
 
+  /**
+   * Verifies are coordinates valid for this game
+   *
+   * @param x
+   * @param y
+   * @returns {boolean}
+   */
   isArgumentsValid(x, y) {
     return (
       x >= 0
@@ -130,7 +137,15 @@ GameSchema.methods = {
     return this;
   },
 
+  /**
+   * Reveals all adjacent squares when clicking on empty square (recursively)
+   *
+   * @param x
+   * @param y
+   * @returns {[null]}
+   */
   getSafeSquaresAround(x, y) {
+    debugger;
     const squares = [{ x, y, adjacentMinesCount: 0 }];
     const visitedEmptySquares = [{ x, y }];
     const adjacentCoordinates = [
@@ -147,27 +162,23 @@ GameSchema.methods = {
     do {
       let { x, y } = visitedEmptySquares.pop();
 
-      adjacentCoordinates.forEach((adj, i) => {
-        x = x + adj.x;
-        y = y + adj.y;
+      adjacentCoordinates.forEach(adj => {
+        const i = x + adj.x;
+        const j = y + adj.y;
 
-        if (!this.isArgumentsValid(x, y)) {
+        if (!this.isArgumentsValid(i, j) || squares.find(isPositionEqual(i, j))) {
           return;
         }
 
-        const adjacentMinesCount = this.getAdjacentMinesCount(x, y);
+        const adjacentMinesCount = this.getAdjacentMinesCount(i, j);
 
-        squares.push({ x, y, adjacentMinesCount });
+        squares.push({ adjacentMinesCount, x: i, y: j });
 
-        if (adjacentMinesCount === 0 && !this.mines.find(isPositionEqual(x, y))) {
-          visitedEmptySquares.push({ x, y });
+        if (adjacentMinesCount === 0 && !this.mines.find(isPositionEqual(i, j))) {
+          visitedEmptySquares.push({ x: i, y: j });
         }
-
-        console.log({ x, y });
       });
     } while (visitedEmptySquares.length !== 0);
-
-    console.log('out');
 
     return squares;
   }
@@ -188,6 +199,7 @@ function isMineAdjacent(x, y) {
     || mine.x === x + 1 && mine.y === y + 1
     || mine.x === x && mine.y === y + 1
     || mine.x === x - 1 && mine.y === y + 1
+    || mine.x === x - 1 && mine.y === y
   );
 }
 
