@@ -20,11 +20,11 @@ app.use(require('cookie-parser')());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
-  secret: 'mining game',
+  secret: config.secrets.session,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: true }
-}))
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 

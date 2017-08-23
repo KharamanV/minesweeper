@@ -38,7 +38,7 @@ router.post('/', (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.json({status: 'error', text: 'wrong credentials'});
+      return res.json({ status: 'error', text: 'wrong credentials' });
     }
     req.logIn(user, function(err) {
       if (err) {

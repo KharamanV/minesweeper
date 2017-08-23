@@ -8,6 +8,7 @@ const Welcome = props => (
     <p className="app__welcome-text">Welcome, {props.username}</p>
   </div>
 );
+
 Welcome.propTypes = {
   username: PropTypes.string.isRequired,
 };
@@ -15,5 +16,5 @@ Welcome.propTypes = {
 const mapStateToProps = state => ({
   username: state.username,
 });
-const WelcomeContainer = connect(mapStateToProps)(Welcome);
-export default WelcomeContainer;
+
+export default connect(mapStateToProps)(Welcome);

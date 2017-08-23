@@ -10,6 +10,7 @@ const Home = props =>
 Home.propTypes = {
   username: PropTypes.string,
 };
+
 Home.defaultProps = {
   username: null,
 };
@@ -17,6 +18,7 @@ Home.defaultProps = {
 const mapStateToProps = state => ({
   username: state.username,
 });
+
 const HomeContainer = connect(mapStateToProps)(Home);
 
 export default HomeContainer;

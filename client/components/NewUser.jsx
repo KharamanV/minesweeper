@@ -23,6 +23,7 @@ class NewUser extends React.Component {
   setRole(e) {
     this.setState({ role: e.target.value });
   }
+
   render() {
     return (
       <div

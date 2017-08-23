@@ -1,2 +1,5 @@
 port: 8740
 mongo: mongodb://localhost/minesweeper
+
+secrets:
+  session: minesweeper_secret_token

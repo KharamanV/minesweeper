@@ -16,7 +16,8 @@ const SignIn = props => (
   </div>
 );
 SignIn.propTypes = {
-  signIn: PropTypes.func.isRequired };
+  signIn: PropTypes.func.isRequired,
+};
 
 const mapDispatchToProps = dispatch => ({
   signIn: (e) => {
@@ -33,8 +34,9 @@ const mapDispatchToProps = dispatch => ({
     });
   },
 });
+
 const mapStateToProps = state => ({
   username: state.username,
 });
-const SignInContainer = connect(mapStateToProps, mapDispatchToProps)(SignIn);
-export default SignInContainer;
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
