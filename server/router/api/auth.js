@@ -55,7 +55,7 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({
     clientID: "732865366871-dp8jog2htk1bgaqte6heb986lk91mhdb.apps.googleusercontent.com",
     clientSecret: "tq5TgpcKemwtVP3upOcjOpuY",
-    callbackURL: "https://goo.gl/C8TmbH"
+    callbackURL: "http://127.0.0.1:3000/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
     User.findOne({googleId: profile.id}, function(err, user) {
