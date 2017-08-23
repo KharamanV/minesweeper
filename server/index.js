@@ -23,8 +23,8 @@ app.use(session({
   secret: 'mining game',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
-}))
+  cookie: { maxAge: 86400000 }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 

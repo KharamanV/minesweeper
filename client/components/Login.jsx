@@ -13,6 +13,9 @@ const SignIn = props => (
       <input id="password" type="password" className="app__input" defaultValue="admin" />
       <input type="submit" className="app__submit" />
     </form>
+    or
+    <a href="/api/auth/facebook">Login with Facebook</a>
+    <a href="/api/auth/google">Login with Google</a>
   </div>
 );
 SignIn.propTypes = {
