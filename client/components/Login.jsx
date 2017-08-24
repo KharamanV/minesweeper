@@ -3,14 +3,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import CSSModules from 'react-css-modules';
 import { setState } from '../actions';
+import styles from '../styles/login.css';
 
 const SignIn = props => (
   <div className="app__signIn">
     Sign in
     <form className="app__form" onSubmit={e => props.signIn(e)} >
-      <input id="username" type="text" className="app__input" defaultValue="admin" />
-      <input id="password" type="password" className="app__input" defaultValue="admin" />
+      <input id="username" type="text" styleName="input" defaultValue="admin" />
+      <input id="password" type="password" styleName="input" defaultValue="admin" />
       <input type="submit" className="app__submit" />
     </form>
     or
@@ -36,8 +38,9 @@ const mapDispatchToProps = dispatch => ({
     });
   },
 });
+
 const mapStateToProps = state => ({
   username: state.username,
 });
-const SignInContainer = connect(mapStateToProps, mapDispatchToProps)(SignIn);
-export default SignInContainer;
+
+export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(SignIn, styles));
