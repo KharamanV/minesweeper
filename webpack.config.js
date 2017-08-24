@@ -7,6 +7,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
   entry: ['./client/index.jsx'],
@@ -29,6 +30,10 @@ const config = {
       template: './client/template.html',
       chunksSortMode: 'dependency',
     }),
+    new ExtractTextPlugin({
+      filename: 'master.css',
+      allChunks: true
+    }),
   ],
   module: {
     rules: [
@@ -37,6 +42,13 @@ const config = {
         exclude: /node_modules/,
         use: ['babel-loader', 'eslint-loader'],
       },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: 'css-loader?modules&localIdentName="[name]__[local]__[hash:base64:6]"'
+        }),
+      }
     ],
   },
 };
