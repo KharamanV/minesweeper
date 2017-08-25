@@ -8,7 +8,8 @@
     "start": "webpack-dev-server --progress",
     "server": "nodemon index.js",
     "build": "webpack -p --colors --progress",
-    "fixtures": "node ./server/fixtures"
+    "fixtures": "node ./server/fixtures",
+    "production": "npm run build && NODE_ENV=production npm run server"
   },
   "author": "",
   "license": "ISC",
