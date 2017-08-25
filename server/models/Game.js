@@ -177,7 +177,7 @@ GameSchema.methods = {
     console.log('out');
 
     return squares;
-  }
+  },
 
   /**
    * Reveals all adjacent squares when clicking on empty square (recursively)
