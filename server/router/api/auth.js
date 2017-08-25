@@ -2,26 +2,47 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const jwt = require('jsonwebtoken');
+// const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 
-passport.use(new LocalStrategy(function(username, password, done) {
-  User.findOne({
-    username: username
-  }, function(err, user) {
-    if (err) {
-      return done(err);
-    }
-    if (!user) {
-      return done(null, false, {message: 'Incorrect username.'});
-    }
-    if (!user.validPassword(password)) {
-      return done(null, false, {message: 'Incorrect password.'});
-    }
-    return done(null, user);
-  });
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = 'secret';
+opts.issuer = 'miningApp';
+passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+    User.findOne({jwt: jwt_payload.sub}, function(err, user) {
+        if (err) {
+            return done(err, false);
+        }
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false);
+            // or you could create a new account
+        }
+    });
 }));
+
+// passport.use(new LocalStrategy(function(username, password, done) {
+//   User.findOne({
+//     username: username
+//   }, function(err, user) {
+//     if (err) {
+//       return done(err);
+//     }
+//     if (!user) {
+//       return done(null, false, {message: 'Incorrect username.'});
+//     }
+//     if (!user.validPassword(password)) {
+//       return done(null, false, {message: 'Incorrect password.'});
+//     }
+//     return done(null, user);
+//   });
+// }));
 
 passport.use(new FacebookStrategy({
     clientID: "124528738191489",
@@ -120,7 +141,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res, next) => {
-  passport.authenticate('local', function(err, user, info) {
+  passport.authenticate('jwt', function(err, user, info) {
     if (err) {
       return next(err);
     }
@@ -134,6 +155,19 @@ router.post('/', (req, res, next) => {
       return res.json({status: 'success', username: req.user.username});
     });
   })(req, res, next);
+});
+
+router.post('/register', (req, res) => {
+  let newUser = new User({
+    username: req.body.username,
+    password: req.body.password,
+    role: 'player',
+    jwt: jwt.sign({ sub: req.body.username }, 'secret'),
+  });
+  newUser.save((err) => {
+    if (err) return console.log("didn't save user");
+    console.log("Saved");
+  });
 });
 
 module.exports = router;
