@@ -27,6 +27,18 @@ describe('Game API', () => {
           { y : 4, x : 1 },
         ],
       },
+      {
+        _id: '599c4b94ac26cb7ba1eb1b67',
+        width: 9,
+        height: 9,
+        patSquares: [{ y: 0, x: 0 }],
+        mines: [
+          { isPat: true, y: 0, x: 1 },
+          { y : 0, x : 2 },
+          { y : 1, x : 2 },
+          { y : 4, x : 1 },
+        ],
+      },
     ],
   };
 
@@ -69,6 +81,11 @@ describe('Game API', () => {
       })
   ));
 
+  it('POST /api/games/:id/reveal (reveals without coordinates)', () => (
+    request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
+      .expect(400)
+  ));
+
   it('POST /api/games/:id/reveal (reveals empty square)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
       .send({ x: 4, y: 4 })
@@ -84,8 +101,20 @@ describe('Game API', () => {
       })
   ));
 
-  it('POST /api/games/:id/reveal (reveals mine)', () => (
+  it('POST /api/games/:id/reveal (reveals square with pat situation)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
+      .send({ x: 0, y: 0 })
+      .expect(200)
+      .expect({
+        x: 0,
+        y: 0,
+        adjacentMinesCount: 0,
+        isMine: true,
+      })
+  ));
+
+  it('POST /api/games/:id/reveal (reveals mine)', () => (
+    request.post('/api/games/599c4b94ac26cb7ba1eb1b67/reveal')
       .send({ x: 1, y: 4 })
       .expect(200)
       .expect({
