@@ -4,7 +4,7 @@
   "description": "Minesweeper",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./server/**/*.spec.js",
+    "test": "mocha ./server/**/*.spec.js --reporter nyan",
     "start": "webpack-dev-server --progress",
     "server": "nodemon index.js",
     "build": "webpack -p --colors --progress",

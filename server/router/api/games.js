@@ -18,12 +18,15 @@ router.post('/', (req, res) => {
       return new Game({ width, height })
         .generateMines(minesCount, isPat)
         .save()
-        .then(({ _id, width, height }) => res.json({
-          _id,
-          width,
-          height,
-          board: generate2DArray({ width, height }),
-        }));
+        .then(({ _id, width, height }) => (
+          res.status(201)
+            .json({
+              _id,
+              width,
+              height,
+              board: generate2DArray({ width, height }),
+            })
+        ));
     })
     .catch(err => res.status(500).json(err));
 });
