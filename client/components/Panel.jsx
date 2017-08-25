@@ -66,5 +66,5 @@ const mapStateToProps = state => ({
   showUserList: state.showUserList,
   showAdd: state.showAdd,
 });
-const PanelContainer = connect(mapStateToProps, mapDispatchToProps)(Panel);
-export default PanelContainer;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Panel);
