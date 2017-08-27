@@ -1,31 +1,27 @@
+// const LocalStrategy = require('passport-local').Strategy;
+const config = require('config');
 const router = require('express').Router();
-const mongoose = require('mongoose');
-const User = mongoose.model('User');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-// const LocalStrategy = require('passport-local').Strategy;
+const User = require('mongoose').model('User');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+const {
+  Strategy: JwtStrategy,
+  ExtractJwt,
+} = require('passport-jwt');
 
-const opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
-opts.issuer = 'miningApp';
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-    User.findOne({jwt: jwt_payload.sub}, function(err, user) {
-        if (err) {
-            return done(err, false);
-        }
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-            // or you could create a new account
-        }
-    });
-}));
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: config.secrets.jwt,
+  issuer: 'blockminer.com',
+};
+
+passport.use(new JwtStrategy(opts, (payload, done) => (
+  User.findOne({ _id: payload.sub })
+    .then(user => done(null, user || false))
+    .catch(done)
+)));
 
 // passport.use(new LocalStrategy(function(username, password, done) {
 //   User.findOne({
@@ -45,9 +41,9 @@ passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
 // }));
 
 passport.use(new FacebookStrategy({
-    clientID: "124528738191489",
-    clientSecret: "c368dbf94483e868904b309480dcd3ac",
-    callbackURL: "http://localhost:3000/api/auth/facebook/callback"
+    clientID: '124528738191489',
+    clientSecret: 'c368dbf94483e868904b309480dcd3ac',
+    callbackURL: 'http://localhost:3000/api/auth/facebook/callback',
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({facebookId: profile.id}, function(err, user) {
@@ -113,13 +109,8 @@ passport.deserializeUser((id, done) => {
 });
 
 router.get('/facebook', passport.authenticate('facebook'));
-
-router.get('/facebook/callback',
-passport.authenticate('facebook', { successRedirect: '/',
-failureRedirect: '/login' }));
-
-router.get('/google',
-  passport.authenticate('google', { scope: ['profile'] }));
+router.get('/facebook/callback',passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
+router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 
 // router.get('/google/callback',
 //   passport.authenticate('google', { failureRedirect: '/login' }),
@@ -132,12 +123,12 @@ router.get(
   '/google/callback',
   passport.authenticate('google', {
     successRedirect: '/',
-    failureRedirect: '/login' ,
-  })
+    failureRedirect: '/login',
+  }),
 );
 
-router.get('/', (req, res) => {
-  res.json({test: true, session: req.session});
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.json(req.user);
 });
 
 router.post('/', (req, res, next) => {

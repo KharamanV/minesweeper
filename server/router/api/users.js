@@ -4,7 +4,7 @@ const User = mongoose.model('User');
 
 router.get('/', (req, res) => {
   User.find({}).select('username role')
-  .then(users => {
+  .then((users) => {
     res.json({ users: users.map(user => ({ id: user._id, username: user.username, role: user.role, })) });
   })
   .catch(err => res.status(500).json(err));
@@ -16,7 +16,7 @@ router.post('/add', (req, res) => {
     password: req.body.password,
     role: req.body.role,
   })
-  .then(user => {
+  .then((user) => {
     res.json({ user });
   })
   .catch(err => res.json({status: 'error', text: 'Could not add user!'}));
