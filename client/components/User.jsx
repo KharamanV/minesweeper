@@ -4,7 +4,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import CSSModules from 'react-css-modules';
 import { removeUser, updateUser } from '../actions';
+import styles from '../styles/user.css';
 
 class User extends React.Component {
   constructor(props) {
@@ -25,7 +27,7 @@ class User extends React.Component {
 
   render() {
     return (
-      <li className="panel__user">
+      <li styleName="panel__user">
         <input
           type="text"
           className="panel__column panel__username"
@@ -103,5 +105,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-const UserContainer = connect(mapStateToProps, mapDispatchToProps)(User);
-export default UserContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(User, styles));

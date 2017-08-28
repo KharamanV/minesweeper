@@ -1,15 +1,31 @@
-// const LocalStrategy = require('passport-local').Strategy;
 const config = require('config');
 const router = require('express').Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const User = require('mongoose').model('User');
+const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const User = require('mongoose').model('User');
 const {
   Strategy: JwtStrategy,
   ExtractJwt,
 } = require('passport-jwt');
+
+passport.use(new LocalStrategy(function(username, password, done) {
+  User.findOne({
+    username: username
+  }, function(err, user) {
+    if (err) {
+      return done(err);
+    }
+    if (!user) {
+      return done(null, false, {message: 'Incorrect username.'});
+    }
+    user.comparePassword(password)
+      .then(isMatch => isMatch ? done(null, user) : done(null, false, {message: 'Incorrect password.'}))
+      .catch(err => console.log(err));
+  });
+}));
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -23,27 +39,10 @@ passport.use(new JwtStrategy(opts, (payload, done) => (
     .catch(done)
 )));
 
-// passport.use(new LocalStrategy(function(username, password, done) {
-//   User.findOne({
-//     username: username
-//   }, function(err, user) {
-//     if (err) {
-//       return done(err);
-//     }
-//     if (!user) {
-//       return done(null, false, {message: 'Incorrect username.'});
-//     }
-//     if (!user.validPassword(password)) {
-//       return done(null, false, {message: 'Incorrect password.'});
-//     }
-//     return done(null, user);
-//   });
-// }));
-
 passport.use(new FacebookStrategy({
-    clientID: '124528738191489',
-    clientSecret: 'c368dbf94483e868904b309480dcd3ac',
-    callbackURL: 'http://localhost:3000/api/auth/facebook/callback',
+    clientID: "124528738191489",
+    clientSecret: "c368dbf94483e868904b309480dcd3ac",
+    callbackURL: "http://localhost:3000/api/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({facebookId: profile.id}, function(err, user) {
@@ -111,28 +110,16 @@ passport.deserializeUser((id, done) => {
 router.get('/facebook', passport.authenticate('facebook'));
 router.get('/facebook/callback',passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
-
-// router.get('/google/callback',
-//   passport.authenticate('google', { failureRedirect: '/login' }),
-//   function(req, res) {
-//     console.log("redirect here");
-//     res.redirect('/');
-//   });
-
 router.get(
   '/google/callback',
   passport.authenticate('google', {
     successRedirect: '/',
-    failureRedirect: '/login',
-  }),
+    failureRedirect: '/login' ,
+  })
 );
 
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.json(req.user);
-});
-
 router.post('/', (req, res, next) => {
-  passport.authenticate('jwt', function(err, user, info) {
+  passport.authenticate('local', function(err, user, info) {
     if (err) {
       return next(err);
     }
@@ -143,6 +130,10 @@ router.post('/', (req, res, next) => {
       if (err) {
         return next(err);
       }
+      console.log(jwt.sign({ sub: req.body.username }, 'secret'));
+      res.set({
+        'Authorization': jwt.sign({ sub: req.body.username }, 'secret'),
+      });
       return res.json({status: 'success', username: req.user.username});
     });
   })(req, res, next);
@@ -153,12 +144,20 @@ router.post('/register', (req, res) => {
     username: req.body.username,
     password: req.body.password,
     role: 'player',
-    jwt: jwt.sign({ sub: req.body.username }, 'secret'),
   });
+
   newUser.save((err) => {
     if (err) return console.log("didn't save user");
     console.log("Saved");
   });
 });
 
+router.get('/test', (req, res) => {
+  let token = req.get('Authorization');
+  if (token) {
+    res.json({test: true, payload: jwt.verify(token, 'secret')});
+  } else {
+    res.sendStatus(401);
+  }
+});
 module.exports = router;
