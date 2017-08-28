@@ -3,7 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import CSSModules from 'react-css-modules';
 import { setState } from '../actions';
+import styles from '../styles/newUser.css';
 
 class NewUser extends React.Component {
   constructor() {
@@ -28,6 +30,7 @@ class NewUser extends React.Component {
     return (
       <div
         className="popup popup-new-user"
+        styleName="popup"
         role="presentation"
         onClick={e => this.props.closePopup(e)}
       >
@@ -41,7 +44,7 @@ class NewUser extends React.Component {
             <input
               id="username"
               type="text"
-              className="popup__input"
+              styleName="popup__input"
               value={this.state.username}
               required
               onChange={e => this.setUsername(e)}
@@ -49,20 +52,20 @@ class NewUser extends React.Component {
             <input
               id="password"
               type="password"
-              className="popup__input"
+              styleName="popup__input"
               value={this.state.password}
               required
               onChange={e => this.setPassword(e)}
             />
             <select
               value={this.state.role}
-              className="popup__input"
+              styleName="popup__input"
               onChange={e => this.setRole(e)}
             >
               <option value="player">Player</option>
               <option value="admin">Admin</option>
             </select>
-            <input type="submit" className="popup__submit" value="Add" />
+            <input type="submit" styleName="popup__submit" value="Add" />
           </form>
         </div>
       </div>
@@ -95,5 +98,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 // const mapStateToProps = state => ({
 //   username: state.username,
 // });
-const NewUserContainer = connect(null, mapDispatchToProps)(NewUser);
-export default NewUserContainer;
+export default connect(null, mapDispatchToProps)(CSSModules(NewUser, styles));

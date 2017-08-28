@@ -9,6 +9,16 @@ export const removeUser = id => ({
 });
 
 export const updateUser = user => ({
-  type: 'REMOVE_USER',
+  type: 'UPDATE_USER',
   user,
+});
+
+export const setUsername = name => ({
+  type: 'SET_USERNAME',
+  username: name,
+});
+
+export const setAuth = auth => ({
+  type: 'SET_AUTH',
+  isAuthenticated: auth,
 });

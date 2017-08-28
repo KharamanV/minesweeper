@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { setState } from '../actions';
+import { setUsername, setAuth } from '../actions';
 import styles from '../styles/login.css';
 
 class SignIn extends React.Component {
@@ -77,7 +77,8 @@ const mapDispatchToProps = dispatch => ({
       const message = response.data;
       if (message.status !== 'error') {
         localStorage.setItem('jwt', response.headers.authorization);
-        dispatch(setState({ username: message.username }));
+        dispatch(setUsername(message.username));
+        dispatch(setAuth(true));
       } else {
         alert(message.text);
       }
@@ -88,7 +89,8 @@ const mapDispatchToProps = dispatch => ({
       const message = response.data;
       if (message.status !== 'error') {
         localStorage.setItem('jwt', response.headers.authorization);
-        dispatch(setState({ username: message.username }));
+        dispatch(setUsername(message.username));
+        dispatch(setAuth(true));
       } else {
         alert(message.text);
       }

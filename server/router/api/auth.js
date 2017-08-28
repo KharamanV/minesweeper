@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('mongoose').model('User');
+const mongoose = require('mongoose');
+const User = mongoose.model('User');
 const {
   Strategy: JwtStrategy,
   ExtractJwt,
@@ -23,7 +24,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
     }
     user.comparePassword(password)
       .then(isMatch => isMatch ? done(null, user) : done(null, false, {message: 'Incorrect password.'}))
-      .catch(err => console.log(err));
+      .catch(err => done(err));
   });
 }));
 
@@ -49,9 +50,8 @@ passport.use(new FacebookStrategy({
       if (err) { return done(err); }
       if (!user) {
         user = new User({
-          username: 'fb',
-          password: '0',
           facebookId: profile.id,
+          name: profile.name,
           role: 'player',
           _id: mongoose.Types.ObjectId(),
         });
@@ -108,7 +108,7 @@ passport.deserializeUser((id, done) => {
 });
 
 router.get('/facebook', passport.authenticate('facebook'));
-router.get('/facebook/callback',passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
+router.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 router.get(
   '/google/callback',
@@ -118,7 +118,7 @@ router.get(
   })
 );
 
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
   passport.authenticate('local', function(err, user, info) {
     if (err) {
       return next(err);
@@ -130,13 +130,21 @@ router.post('/', (req, res, next) => {
       if (err) {
         return next(err);
       }
-      console.log(jwt.sign({ sub: req.body.username }, 'secret'));
       res.set({
         'Authorization': jwt.sign({ sub: req.body.username }, 'secret'),
       });
       return res.json({status: 'success', username: req.user.username});
     });
-  })(req, res, next);
+  })(req, res);
+});
+
+router.get('/', (req, res) => {
+  let token = req.get('Authorization');
+  if (token) {
+    res.json({status: 'success', username: jwt.verify(token, 'secret').sub});
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 router.post('/register', (req, res) => {
@@ -150,14 +158,11 @@ router.post('/register', (req, res) => {
     if (err) return console.log("didn't save user");
     console.log("Saved");
   });
+
+  res.set({
+    'Authorization': jwt.sign({ sub: req.body.username }, 'secret'),
+  });
+  return res.json({status: 'success', username: req.body.username});
 });
 
-router.get('/test', (req, res) => {
-  let token = req.get('Authorization');
-  if (token) {
-    res.json({test: true, payload: jwt.verify(token, 'secret')});
-  } else {
-    res.sendStatus(401);
-  }
-});
 module.exports = router;
