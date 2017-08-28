@@ -18,12 +18,15 @@ router.post('/', (req, res) => {
       return new Game({ width, height })
         .generateMines(minesCount, isPat)
         .save()
-        .then(({ _id, width, height }) => res.json({
-          _id,
-          width,
-          height,
-          board: generate2DArray({ width, height }),
-        }));
+        .then(({ _id, width, height }) => (
+          res.status(201)
+            .json({
+              _id,
+              width,
+              height,
+              board: generate2DArray({ width, height }),
+            })
+        ));
     })
     .catch(err => res.status(500).json(err));
 });
@@ -43,8 +46,8 @@ router.get('/:id', (req, res) => {
 router.post('/:id/reveal', (req, res) => {
   const { x, y } = req.body;
 
-  if (!x || !y) {
-    return res.status(400).json('Missing arguments');
+  if (!x && x !== 0 || !y && y !== 0) {
+    return res.sendStatus(400);
   }
 
   return Game.findOne({ _id: req.params.id })

@@ -4,11 +4,12 @@
   "description": "Minesweeper",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./server/**/*.spec.js",
+    "test": "mocha ./server/**/*.spec.js --reporter nyan",
     "start": "webpack-dev-server --progress",
     "server": "nodemon index.js",
     "build": "webpack -p --colors --progress",
-    "fixtures": "node ./server/fixtures"
+    "fixtures": "node ./server/fixtures",
+    "production": "npm run build && NODE_ENV=production npm run server"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "js-yaml": "^3.9.1",
+    "jsonwebtoken": "^7.4.3",
     "mongoose": "^4.11.7",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
