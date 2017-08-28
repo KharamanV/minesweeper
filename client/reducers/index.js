@@ -20,6 +20,18 @@ function mineSweeper(state = {}, action) {
         users,
       };
     }
+    case 'SET_USERNAME': {
+      return {
+        ...state,
+        username: action.username,
+      };
+    }
+    case 'SET_AUTH': {
+      return {
+        ...state,
+        isAuthenticated: action.isAuthenticated,
+      };
+    }
     default:
       return state;
   }

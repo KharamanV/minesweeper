@@ -5,20 +5,18 @@ import Login from './Login';
 import Welcome from './Welcome';
 
 const Home = props =>
-  (props.username ? <Welcome /> : <Login />);
+  (props.auth ? <Welcome /> : <Login />);
 
 Home.propTypes = {
-  username: PropTypes.string,
+  auth: PropTypes.bool,
 };
 
 Home.defaultProps = {
-  username: null,
+  auth: false,
 };
 
 const mapStateToProps = state => ({
-  username: state.username,
+  auth: state.isAuthenticated,
 });
 
-const HomeContainer = connect(mapStateToProps)(Home);
-
-export default HomeContainer;
+export default connect(mapStateToProps)(Home);
