@@ -1,5 +1,7 @@
 import axios from 'axios';
 
-export const fetchGame = gameId => {
-  return axios(`/api/games/${gameId}`);
-};
+const token = localStorage.getItem('jwt');
+
+export const request = axios.create({
+  headers: token ? { Authorization: token } : "",
+});
