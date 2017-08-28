@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import Home from './Home';
 import Panel from './Panel';
+import Game from '../containers/Game';
 
 const App = props => (
   <Router>
@@ -20,6 +21,7 @@ const App = props => (
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/admin" component={Panel} />
+        <Route path="/play" component={Game} />
       </Switch>
     </div>
   </Router>
