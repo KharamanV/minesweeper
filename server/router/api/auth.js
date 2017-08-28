@@ -118,7 +118,7 @@ router.get(
 );
 
 router.post('/', (req, res, next) => {
-  passport.authenticate('local', function(err, user, info) {
+  passport.authenticate('jwt', function(err, user, info) {
     if (err) {
       return next(err);
     }
