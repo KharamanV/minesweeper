@@ -13,6 +13,7 @@ class User extends React.Component {
     super(props);
     this.state = {
       username: props.username,
+      name: props.name,
       role: props.role,
     };
   }
@@ -32,6 +33,12 @@ class User extends React.Component {
           type="text"
           className="panel__column panel__username"
           value={this.state.username}
+          onChange={e => this.setUsername(e)}
+        />
+        <input
+          type="text"
+          className="panel__column panel__username"
+          value={this.state.name}
           onChange={e => this.setUsername(e)}
         />
         <select value={this.state.role} className="panel__column" onChange={e => this.setRole(e)}>
@@ -68,15 +75,22 @@ class User extends React.Component {
 // );
 
 User.propTypes = {
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
+  name: PropTypes.string,
   role: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   remove: PropTypes.func.isRequired,
   save: PropTypes.func.isRequired,
 };
 
+User.defaultProps = {
+  username: '',
+  name: '',
+};
+
 const mapStateToProps = (state, ownProps) => ({
   username: ownProps.user.username,
+  name: ownProps.user.name,
   role: ownProps.user.role,
   id: ownProps.user.id,
 });

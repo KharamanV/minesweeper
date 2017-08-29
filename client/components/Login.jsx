@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { setUsername, setAuth } from '../actions';
+import { setAuth } from '../actions';
+// import request from '../api';
 import styles from '../styles/login.css';
 
 class SignIn extends React.Component {
@@ -72,33 +73,26 @@ SignIn.propTypes = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  signIn: (credentials) => {
+  signIn(credentials) {
     axios.post('/api/auth', credentials).then((response) => {
       if (response.status !== 200) {
         alert(response.statusText);
       } else {
         localStorage.setItem('jwt', response.data.token);
-        request.defaults.headers.common.Authorization = response.data.token;
-        // console.log(request.defaults.headers.common.Authorization);
         dispatch(setAuth(true));
       }
     });
   },
-  signUp: (credentials) => {
+  signUp(credentials) {
     axios.post('/api/auth/register', credentials).then((response) => {
       if (response.status !== 200) {
         alert(response.statusText);
       } else {
         localStorage.setItem('jwt', response.data.token);
-        request.defaults.headers.common.Authorization = response.data.token;
         dispatch(setAuth(true));
       }
     });
   },
 });
 
-const mapStateToProps = state => ({
-  username: state.username,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(SignIn, styles));
+export default connect(null, mapDispatchToProps)(CSSModules(SignIn, styles));

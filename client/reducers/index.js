@@ -26,6 +26,12 @@ function mineSweeper(state = {}, action) {
         username: action.username,
       };
     }
+    case 'SET_NAME': {
+      return {
+        ...state,
+        name: action.name,
+      };
+    }
     case 'SET_AUTH': {
       return {
         ...state,

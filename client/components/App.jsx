@@ -8,11 +8,11 @@ import {
   Link,
   Switch,
 } from 'react-router-dom';
-import { setUsername, setAuth } from '../actions';
+import { setAuth } from '../actions';
 import Home from './Home';
 import Panel from './Panel';
-import { request } from '../api';
 import Game from '../containers/Game';
+import request from '../api';
 
 class App extends React.Component {
   componentWillMount() {
@@ -20,12 +20,10 @@ class App extends React.Component {
     if (token) {
       request.get('/api/auth/')
         .then((response) => {
-          const message = response.data;
-          if (message.status === 'error') {
-            console.log(message.text);
+          if (response.status !== 200) {
+            console.log(response.statusText);
           } else {
             this.props.setAuthenticated(true);
-            this.props.setName(message.username);
           }
         });
     }
@@ -34,6 +32,7 @@ class App extends React.Component {
   logout() {
     localStorage.removeItem('jwt');
     this.props.setAuthenticated(false);
+    // request.defaults.headers.common.Authorization = '';
   }
 
   render() {
@@ -60,7 +59,6 @@ class App extends React.Component {
 
 App.propTypes = {
   auth: PropTypes.bool.isRequired,
-  setName: PropTypes.func.isRequired,
   setAuthenticated: PropTypes.func.isRequired,
 };
 
@@ -69,9 +67,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setName(username) {
-    dispatch(setUsername(username));
-  },
   setAuthenticated(auth) {
     dispatch(setAuth(auth));
   },

@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
 router.get('/', (req, res) => {
-  User.find({}).select('username role')
+  User.find({}).select('username role name')
   .then((users) => {
-    res.json({ users: users.map(user => ({ id: user._id, username: user.username, role: user.role, })) });
+    res.json({ users: users.map(user => ({ id: user._id, username: user.username, role: user.role, name: user.name })) });
   })
   .catch(err => res.status(500).json(err));
 });

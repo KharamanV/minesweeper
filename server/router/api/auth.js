@@ -31,6 +31,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: config.secrets.jwt,
+  issuer: 'blockminer.com',
 };
 
 passport.use(new JwtStrategy(opts, (payload, done) => (
@@ -50,9 +51,8 @@ passport.use(new FacebookStrategy({
       if (!user) {
         user = new User({
           facebookId: profile.id,
-          name: profile.name,
+          name: profile.displayName,
           role: 'player',
-          _id: mongoose.Types.ObjectId(),
         });
         user.save((err) => {
           if (err) {
@@ -107,7 +107,24 @@ passport.deserializeUser((id, done) => {
 });
 
 router.get('/facebook', passport.authenticate('facebook'));
-router.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
+// router.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/?token=ggg', failureRedirect: '/login' }));
+router.get('/facebook/callback', (req, res) => {
+  passport.authenticate('facebook', function(err, user, info) {
+    if (err) {
+      res.sendStatus(500);
+    }
+    if (!user) {
+      return res.sendStatus(401);
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        res.sendStatus(500);
+      }
+      const token = jwt.sign({ sub: user.id }, 'secret');
+      return res.redirect(`/?token=${token}`);
+    });
+  })(req, res);
+});
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 router.get(
   '/google/callback',

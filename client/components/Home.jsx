@@ -8,11 +8,7 @@ const Home = props =>
   (props.auth ? <Welcome /> : <Login />);
 
 Home.propTypes = {
-  auth: PropTypes.bool,
-};
-
-Home.defaultProps = {
-  auth: false,
+  auth: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
