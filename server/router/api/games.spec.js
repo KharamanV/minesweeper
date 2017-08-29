@@ -33,9 +33,9 @@ describe('Game API', () => {
         patSquares: [{ y: 0, x: 0 }],
         mines: [
           { isPat: true, y: 0, x: 1 },
-          { y : 0, x : 2 },
-          { y : 1, x : 2 },
-          { y : 4, x : 1 },
+          { y: 0, x: 2 },
+          { y: 1, x: 2 },
+          { y: 4, x: 1 },
         ],
       },
       {
@@ -45,9 +45,9 @@ describe('Game API', () => {
         patSquares: [{ y: 0, x: 0 }],
         mines: [
           { isPat: true, y: 0, x: 1 },
-          { y : 0, x : 2 },
-          { y : 1, x : 2 },
-          { y : 4, x : 1 },
+          { y: 0, x: 2 },
+          { y: 1, x: 2 },
+          { y: 4, x: 1 },
         ],
       },
     ],
@@ -64,7 +64,7 @@ describe('Game API', () => {
       .send({ preset: '59946e890ddfc046f2a0496e' })
       .expect(201)
       .expect('Content-Type', /json/)
-      .then(res => {
+      .then((res) => {
         res.body.should.include({ width: 5, height: 5 }).and.have.property('_id');
         res.body.board.should.be.an('array').and.have.length(5);
 

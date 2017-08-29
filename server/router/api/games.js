@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
         width,
         height,
         board: generate2DArray({ width, height }),
-      })
+      });
   } catch (err) {
     res.status(500).json(err);
   }

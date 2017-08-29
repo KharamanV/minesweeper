@@ -12,26 +12,22 @@ const {
   ExtractJwt,
 } = require('passport-jwt');
 
-passport.use(new LocalStrategy(function(username, password, done) {
-  User.findOne({
-    username: username
-  }, function(err, user) {
-    if (err) {
-      return done(err);
-    }
-    if (!user) {
-      return done(null, false, {message: 'Incorrect username.'});
-    }
-    user.comparePassword(password)
-      .then(isMatch => isMatch ? done(null, user) : done(null, false, {message: 'Incorrect password.'}))
-      .catch(err => done(err));
-  });
-}));
+passport.use(new LocalStrategy((username, password, done) => (
+  User.findOne({ username })
+    .then((user) => {
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username' });
+      }
+
+      return user.comparePassword(password)
+        .then(isMatch => isMatch ? done(null, user) : done(null, false, { message: 'Incorrect password.' }))
+    })
+    .catch(done)
+)));
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: config.secrets.jwt,
-  issuer: 'blockminer.com',
 };
 
 passport.use(new JwtStrategy(opts, (payload, done) => (
@@ -135,17 +131,18 @@ router.get(
 );
 
 router.post('/', (req, res) => {
-  passport.authenticate('local', function(err, user, info) {
+  passport.authenticate('local', (err, user, info) => {
     if (err) {
       return next(err);
     }
     if (!user) {
       return res.sendStatus(401);
     }
-    req.logIn(user, function(err) {
+    req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
+      
       return res.json({ token: jwt.sign({ sub: req.user.id }, config.secrets.jwt) });
     });
   })(req, res);
@@ -169,8 +166,6 @@ router.get('/', (req, res) => {
 router.get('/name', (req, res) => {
   const authHeader = req.get('Authorization');
   const token = authHeader && authHeader.replace(/^Bearer /, '');
-
-  console.log(token);
 
   if (token) {
     res.json({status: 'success', username: jwt.verify(token, config.secrets.jwt).sub});
