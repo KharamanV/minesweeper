@@ -31,7 +31,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: config.secrets.jwt,
-  issuer: 'blockminer.com',
 };
 
 passport.use(new JwtStrategy(opts, (payload, done) => (
@@ -130,15 +129,17 @@ router.post('/', (req, res) => {
       if (err) {
         return next(err);
       }
-      return res.json({ token: jwt.sign({ sub: req.user.id }, 'secret') });
+      return res.json({ token: jwt.sign({ sub: req.user.id }, config.secrets.jwt) });
     });
   })(req, res);
 });
 
 router.get('/', (req, res) => {
-  let token = req.get('Authorization').replace(/^Bearer /, '');
+  const authHeader = req.get('Authorization');
+  const token = authHeader && authHeader.replace(/^Bearer /, '');
+
   if (token) {
-    User.findById(jwt.verify(token, 'secret').sub)
+    User.findById(jwt.verify(token, config.secrets.jwt).sub)
       .then(user => {
         if (user) res.sendStatus(200);
         else res.sendStatus(401);
@@ -149,10 +150,13 @@ router.get('/', (req, res) => {
 });
 
 router.get('/name', (req, res) => {
-  let token = req.get('Authorization').replace(/^Bearer /, '');
+  const authHeader = req.get('Authorization');
+  const token = authHeader && authHeader.replace(/^Bearer /, '');
+
   console.log(token);
+
   if (token) {
-    res.json({status: 'success', username: jwt.verify(token, 'secret').sub});
+    res.json({status: 'success', username: jwt.verify(token, config.secrets.jwt).sub});
   } else {
     res.sendStatus(401);
   }
@@ -169,10 +173,11 @@ router.post('/register', (req, res) => {
 
   newUser.save((err) => {
     if (err) return console.log("didn't save user");
-    return res.json({ token: jwt.sign({ sub: newUser.id }, 'secret') });
+    return res.json({ token: jwt.sign({ sub: newUser.id }, config.secrets.jwt) });
   });
 });
 
-router.use(passport.authenticate('jwt', { session: false }));
-
-module.exports = router;
+module.exports = {
+  auth: router,
+  security: () => passport.authenticate('jwt', { session: false }),
+};

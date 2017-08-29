@@ -2,39 +2,41 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const { generate2DArray } = require('../../services/utils');
 const Game = mongoose.model('Game');
+const User = mongoose.model('User');
 const Preset = mongoose.model('Preset');
 
-router.post('/', (req, res) => {
-  const { preset } = req.body;
-  const userId = req.user && req.user._id;
-  //console.log(req.headers, req.user);
+router.post('/', async (req, res) => {
+  try {
+    const { preset } = req.body;
 
-  if (!preset || !userId) {
-    return res.sendStatus(400);
+    if (!preset) {
+      return res.sendStatus(400);
+    }
+
+    const isPat = true;
+    const { width, height, minesCount } = await Preset.findOne({ _id: preset });
+    const game = new Game({ width, height });
+    const { _id } = await game.generateMines(minesCount, isPat).save();
+    const user = await User.findById(req.user._id);
+
+    user.game = _id;
+
+    await user.save();
+
+    res.status(201)
+      .json({
+        _id,
+        width,
+        height,
+        board: generate2DArray({ width, height }),
+      })
+  } catch (err) {
+    res.status(500).json(err);
   }
-
-  const isPat = true;
-
-  return Preset.findOne({ _id: preset })
-    .then(({ width, height, minesCount }) => {
-      return new Game({ width, height, user })
-        .generateMines(minesCount, isPat)
-        .save()
-        .then(({ _id, width, height }) => (
-          res.status(201)
-            .json({
-              _id,
-              width,
-              height,
-              board: generate2DArray({ width, height }),
-            })
-        ));
-    })
-    .catch(err => res.status(500).json(err));
 });
 
 router.get('/:id', (req, res) => {
-  const {id: _id} = req.params;
+  const { id: _id } = req.params;
 
   return Game.findOne({ _id })
     .then(({ width, height, mines }) => res.json({

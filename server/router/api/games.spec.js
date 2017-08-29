@@ -3,12 +3,15 @@ const {
   loadFixtures,
   clearFixtures,
   auth,
+  mongoose,
 } = require('../../services/test');
+const User = mongoose.model('User');
 
 describe('Game API', () => {
   const fixtures = {
     User: [
       {
+        _id: '59946e890ddfc046f2a0412a',
         username: 'test',
         password: 'password',
         role: 'admin',
@@ -55,22 +58,30 @@ describe('Game API', () => {
   before(() => auth('test', 'password').then(jwt => token = jwt));
   after(() => clearFixtures(fixtures));
 
-  it('POST /api/games', () => (console.log(token) ||
+  it('POST /api/games', () => (
     request.post('/api/games')
-      .set('Authorization', token)
+      .set('Authorization', `Bearer ${token}`)
       .send({ preset: '59946e890ddfc046f2a0496e' })
       .expect(201)
       .expect('Content-Type', /json/)
       .then(res => {
-        res.body.should.include({ width: 5, height: 5 });
+        res.body.should.include({ width: 5, height: 5 }).and.have.property('_id');
         res.body.board.should.be.an('array').and.have.length(5);
+
+        return User.findById('59946e890ddfc046f2a0412a');
       })
+      .then(user => user.game.toString().should.be.a('string'))
   ));
 
-  it('POST /api/games without preset', () => request.post('/api/games').expect(400));
+  it('POST /api/games without preset', () => (
+    request.post('/api/games')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+  ));
 
   it('GET /api/games/:id', () => (
     request.get('/api/games/599c4b94ac26cb7ba1eb1b66')
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .expect({
@@ -82,6 +93,7 @@ describe('Game API', () => {
 
   it('POST /api/games/:id/reveal (reveals square)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
+      .set('Authorization', `Bearer ${token}`)
       .send({ x: 3, y: 0 })
       .expect(200)
       .expect({
@@ -94,11 +106,13 @@ describe('Game API', () => {
 
   it('POST /api/games/:id/reveal (reveals without coordinates)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
+      .set('Authorization', `Bearer ${token}`)
       .expect(400)
   ));
 
   it('POST /api/games/:id/reveal (reveals empty square)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
+      .set('Authorization', `Bearer ${token}`)
       .send({ x: 4, y: 4 })
       .expect(200)
       .then((res) => {
@@ -114,6 +128,7 @@ describe('Game API', () => {
 
   it('POST /api/games/:id/reveal (reveals square with pat situation)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b66/reveal')
+      .set('Authorization', `Bearer ${token}`)
       .send({ x: 0, y: 0 })
       .expect(200)
       .expect({
@@ -126,6 +141,7 @@ describe('Game API', () => {
 
   it('POST /api/games/:id/reveal (reveals mine)', () => (
     request.post('/api/games/599c4b94ac26cb7ba1eb1b67/reveal')
+      .set('Authorization', `Bearer ${token}`)
       .send({ x: 1, y: 4 })
       .expect(200)
       .expect({

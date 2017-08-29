@@ -12,6 +12,7 @@ module.exports = {
   loadFixtures,
   clearFixtures,
   auth,
+  mongoose,
 };
 
 function loadFixtures(fixtures) {
