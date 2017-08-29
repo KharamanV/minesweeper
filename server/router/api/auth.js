@@ -124,16 +124,13 @@ router.post('/', (req, res) => {
       return next(err);
     }
     if (!user) {
-      return res.json({ status: 'error', text: 'wrong credentials' });
+      return res.sendStatus(401);
     }
     req.logIn(user, function(err) {
       if (err) {
         return next(err);
       }
-      res.set({
-        'Authorization': jwt.sign({ sub: req.body.username }, 'secret'),
-      });
-      return res.json({status: 'success', username: req.user.username});
+      return res.json({ token: jwt.sign({ sub: req.user.id }, 'secret') });
     });
   })(req, res);
 });
@@ -152,17 +149,14 @@ router.post('/register', (req, res) => {
     username: req.body.username,
     password: req.body.password,
     role: 'player',
+    name: 'LocalName',
+    _id: mongoose.Types.ObjectId(),
   });
 
   newUser.save((err) => {
     if (err) return console.log("didn't save user");
-    console.log("Saved");
+    return res.json({ token: jwt.sign({ sub: newUser.id }, 'secret') });
   });
-
-  res.set({
-    'Authorization': jwt.sign({ sub: req.body.username }, 'secret'),
-  });
-  return res.json({status: 'success', username: req.body.username});
 });
 
 module.exports = router;
