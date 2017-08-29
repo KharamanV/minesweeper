@@ -2,6 +2,7 @@ const {
   request,
   loadFixtures,
   clearFixtures,
+  auth,
 } = require('../../services/test');
 
 describe('Game API', () => {
@@ -9,6 +10,8 @@ describe('Game API', () => {
     User: [
       {
         username: 'test',
+        password: 'password',
+        role: 'admin',
       }
     ],
     Preset: [
@@ -46,13 +49,15 @@ describe('Game API', () => {
       },
     ],
   };
-  const userId = '599c4b94ac26cb7ba1eb1z12';
+  let token = null;
 
   before(() => loadFixtures(fixtures));
+  before(() => auth('test', 'password').then(jwt => token = jwt));
   after(() => clearFixtures(fixtures));
 
-  it('POST /api/games', () => (
+  it('POST /api/games', () => (console.log(token) ||
     request.post('/api/games')
+      .set('Authorization', token)
       .send({ preset: '59946e890ddfc046f2a0496e' })
       .expect(201)
       .expect('Content-Type', /json/)

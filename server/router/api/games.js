@@ -4,11 +4,12 @@ const { generate2DArray } = require('../../services/utils');
 const Game = mongoose.model('Game');
 const Preset = mongoose.model('Preset');
 
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
   const { preset } = req.body;
-  const user = req.user._id;
+  const userId = req.user && req.user._id;
+  //console.log(req.headers, req.user);
 
-  if (!preset || !user) {
+  if (!preset || !userId) {
     return res.sendStatus(400);
   }
 
