@@ -2,35 +2,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import { request } from '../api';
+import request from '../api';
+import { setName } from '../actions';
 
-const Welcome = props => (
-  <div className="app__welcome">
-    <p className="app__welcome-text">Welcome, {props.username}</p>
-    {/* <button onClick={() => props.testAuth()}>Test</button> */}
-  </div>
-);
+class Welcome extends React.Component {
+  componentWillMount() {
+    this.props.getName();
+  }
+  render() {
+    return (
+      <div className="app__welcome">
+        {this.props.name && <p className="app__welcome-text">Welcome, {this.props.name}</p>}
+      </div>
+    );
+  }
+}
 
 Welcome.propTypes = {
-  username: PropTypes.string,
-  // testAuth: PropTypes.func.isRequired,
+  name: PropTypes.string,
+  getName: PropTypes.func.isRequired,
 };
 
 Welcome.defaultProps = {
-  username: '',
+  name: '',
 };
 
 const mapStateToProps = state => ({
-  username: state.username,
+  name: state.name,
 });
 
-const mapDispatchToProps = () => ({
-  // testAuth: () => {
-  //   request.get('/api/auth/')
-  //     .then((response) => {
-  //       console.log(response.data);
-  //     });
-  // },
+const mapDispatchToProps = dispatch => ({
+  getName() {
+    console.log(localStorage.getItem('jwt'));
+    request.get('/api/auth/name')
+      .then((response) => {
+        dispatch(setName(response.data.name));
+      });
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

@@ -18,6 +18,11 @@ export const setUsername = name => ({
   username: name,
 });
 
+export const setName = name => ({
+  type: 'SET_NAME',
+  name,
+});
+
 export const setAuth = auth => ({
   type: 'SET_AUTH',
   isAuthenticated: auth,
