@@ -27,3 +27,11 @@ function loadFixtures(fixtures) {
 function clearFixtures(fixtures) {
   return Promise.all(Object.keys(fixtures).map(model => mongoose.model(model).remove()));
 }
+
+function auth(login, password) {
+  return request.post('/auth')
+    .send({ login, password })
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(({ token }) => token.should.be.a('string') && token);
+}

@@ -6,6 +6,11 @@ const {
 
 describe('Game API', () => {
   const fixtures = {
+    User: [
+      {
+        username: 'test',
+      }
+    ],
     Preset: [
       {
         _id: '59946e890ddfc046f2a0496e',
@@ -41,6 +46,7 @@ describe('Game API', () => {
       },
     ],
   };
+  const userId = '599c4b94ac26cb7ba1eb1z12';
 
   before(() => loadFixtures(fixtures));
   after(() => clearFixtures(fixtures));

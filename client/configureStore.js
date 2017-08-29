@@ -1,6 +1,9 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import logger from 'redux-logger';
 import mineSweeper from './reducers';
 
-const configureStore = initialState => createStore(mineSweeper, initialState);
-
-export default configureStore;
+export default initialState => createStore(
+  mineSweeper,
+  initialState,
+  applyMiddleware(logger),
+);

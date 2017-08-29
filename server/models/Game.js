@@ -15,7 +15,8 @@ const GameSchema = new Schema({
   visitedSquares: { type: [], default: [] },
   startDate: { type: Date, default: Date.now, required: true },
   isOver: { type: Boolean, default: false },
-  winner: { type: Schema.Types.ObjectId, default: null },
+  isWon: { type: Boolean, default: false },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 
 /**

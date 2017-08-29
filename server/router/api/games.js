@@ -4,10 +4,11 @@ const { generate2DArray } = require('../../services/utils');
 const Game = mongoose.model('Game');
 const Preset = mongoose.model('Preset');
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { preset } = req.body;
+  const user = req.user._id;
 
-  if (!preset) {
+  if (!preset || !user) {
     return res.sendStatus(400);
   }
 
@@ -15,7 +16,7 @@ router.post('/', (req, res) => {
 
   return Preset.findOne({ _id: preset })
     .then(({ width, height, minesCount }) => {
-      return new Game({ width, height })
+      return new Game({ width, height, user })
         .generateMines(minesCount, isPat)
         .save()
         .then(({ _id, width, height }) => (
