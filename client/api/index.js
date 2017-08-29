@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-const token = localStorage.getItem('jwt');
+axios.interceptors.request.use(config => ({
+  ...config,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+  },
+}), err => Promise.reject(err));
 
-export const request = axios.create({
-  headers: token ? { Authorization: token } : '',
-});
-
-export const request2 = axios.create({
-  headers: token ? { Authorization: token } : '',
-});
+export default axios;

@@ -136,7 +136,21 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  let token = req.get('Authorization');
+  let token = req.get('Authorization').replace(/^Bearer /, '');
+  if (token) {
+    User.findById(jwt.verify(token, 'secret').sub)
+      .then(user => {
+        if (user) res.sendStatus(200);
+        else res.sendStatus(401);
+      });
+  } else {
+    res.sendStatus(401);
+  }
+});
+
+router.get('/name', (req, res) => {
+  let token = req.get('Authorization').replace(/^Bearer /, '');
+  console.log(token);
   if (token) {
     res.json({status: 'success', username: jwt.verify(token, 'secret').sub});
   } else {
