@@ -74,25 +74,24 @@ SignIn.propTypes = {
 const mapDispatchToProps = dispatch => ({
   signIn: (credentials) => {
     axios.post('/api/auth', credentials).then((response) => {
-      const message = response.data;
-      if (message.status !== 'error') {
-        localStorage.setItem('jwt', response.headers.authorization);
-        dispatch(setUsername(message.username));
-        dispatch(setAuth(true));
+      if (response.status !== 200) {
+        alert(response.statusText);
       } else {
-        alert(message.text);
+        localStorage.setItem('jwt', response.data.token);
+        request.defaults.headers.common.Authorization = response.data.token;
+        // console.log(request.defaults.headers.common.Authorization);
+        dispatch(setAuth(true));
       }
     });
   },
   signUp: (credentials) => {
     axios.post('/api/auth/register', credentials).then((response) => {
-      const message = response.data;
-      if (message.status !== 'error') {
-        localStorage.setItem('jwt', response.headers.authorization);
-        dispatch(setUsername(message.username));
-        dispatch(setAuth(true));
+      if (response.status !== 200) {
+        alert(response.statusText);
       } else {
-        alert(message.text);
+        localStorage.setItem('jwt', response.data.token);
+        request.defaults.headers.common.Authorization = response.data.token;
+        dispatch(setAuth(true));
       }
     });
   },
