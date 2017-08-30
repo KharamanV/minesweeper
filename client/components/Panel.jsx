@@ -4,11 +4,19 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
+<<<<<<< 7dbd5d604f9287a265f1abf8b249eeebf4082835
 import { setUsers, setPresets } from '../actions';
 import NewUser from './NewUser';
 import User from './User';
 import Preset from './Preset';
 import styles from '../styles/panel.css';
+=======
+import { setUsers } from '../actions';
+import NewUser from './NewUser';
+import User from './User';
+import styles from '../styles/panel.css';
+
+>>>>>>> Add basic styles
 
 class Panel extends React.Component {
   constructor() {
