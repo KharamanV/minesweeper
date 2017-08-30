@@ -152,7 +152,7 @@ router.post('/register', (req, res) => {
           username: req.body.username,
           password: req.body.password,
           role: 'player',
-          name: 'LocalName',
+          name: req.body.name,
           _id: mongoose.Types.ObjectId(),
         });
 
