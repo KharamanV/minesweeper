@@ -1,0 +1,23 @@
+.panel {
+  margin: 0;
+}
+.options {
+  display: flex;
+  list-style-type: none;
+  margin: 15px -15px;
+}
+.option {
+  margin: 0 15px;
+}
+.option-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.option-button:hover {
+  text-decoration: underline;
+}
+.option-button:focus {
+  outline: none;
+}

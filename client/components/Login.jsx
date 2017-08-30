@@ -36,7 +36,7 @@ class SignIn extends React.Component {
         <Redirect to="/" />
       ) : (
         <div className="app__signIn">
-          Sign in
+          <h2 styleName="title">Sign in</h2>
           <form styleName="form" onSubmit={e => this.signInClick(e)}>
             <div styleName="input-wrapper">
               <label htmlFor="username" styleName="label">Login:</label>
@@ -62,15 +62,15 @@ class SignIn extends React.Component {
             </div>
             <input styleName="submit" type="submit" value="Sign In" />
           </form>
-          <p>New user? Try to <Link
+          <p styleName="link">New user? Try to <Link
             className="app__nav-link"
             to="/register"
           >register
           </Link>
           </p>
-          or
-          <a href="/api/auth/facebook">Login with Facebook</a>
-          <a href="/api/auth/google">Login with Google</a>
+          <p styleName="link">or</p>
+          <a styleName="link" href="/api/auth/facebook">Login with Facebook</a>
+          <a styleName="link" href="/api/auth/google">Login with Google</a>
         </div>
       )
     );
@@ -88,14 +88,18 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   signIn(credentials) {
-    axios.post('/api/auth', credentials).then((response) => {
-      if (response.status !== 200) {
-        alert(response.statusText);
-      } else {
+    axios.post('/api/auth', credentials)
+      .then((response) => {
         localStorage.setItem('jwt', response.data.token);
         dispatch(setAuth(true));
-      }
-    });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          alert('Wrong username or password');
+        } else {
+          console.log(err);
+        }
+      });
   },
 });
 

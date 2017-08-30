@@ -32,27 +32,27 @@ class User extends React.Component {
 
   render() {
     return (
-      <li styleName="panel__user">
+      <li styleName="user">
         <p styleName="id">{this.props.id}</p>
         <input
           type="text"
-          className="panel__column panel__username"
+          styleName="column"
           value={this.state.username}
           onChange={e => this.setUsername(e)}
         />
         <input
           type="text"
-          className="panel__column panel__username"
+          styleName="column"
           value={this.state.name}
           onChange={e => this.setName(e)}
         />
-        <select value={this.state.role} className="panel__column" onChange={e => this.setRole(e)}>
+        <select value={this.state.role} styleName="column" onChange={e => this.setRole(e)}>
           <option value="player">Player</option>
           <option value="admin">Admin</option>
         </select>
-        <div className="panel__column panel__edit">
+        <div styleName="column">
           <button
-            className="panel__user-button"
+            styleName="user-button"
             onClick={() => this.props.save({
               id: this.props.id,
               ...this.state,
@@ -61,9 +61,9 @@ class User extends React.Component {
             Save
           </button>
         </div>
-        <div className="panel__column panel__remove">
+        <div styleName="column">
           <button
-            className="panel__user-button"
+            styleName="user-button"
             onClick={() => this.props.remove(this.props.id)}
           >
             Remove

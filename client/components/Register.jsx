@@ -55,7 +55,7 @@ class SignIn extends React.Component {
         <Redirect to="/" />
       ) : (
         <div className="app__signIn">
-          Register
+          <h2 styleName="title">Register</h2>
           <form styleName="form" onSubmit={e => this.signUpClick(e)}>
             <div styleName="input-wrapper">
               <label htmlFor="name" styleName="label">Name:</label>
@@ -100,7 +100,7 @@ class SignIn extends React.Component {
             </div>
             <input styleName="submit" type="submit" value="Sign Up" />
           </form>
-          <p>Already have account? Try to <Link
+          <p styleName="link">Already have account? Try to <Link
             className="app__nav-link"
             to="/login"
           >sign in

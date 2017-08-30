@@ -1,5 +1,11 @@
+.title {
+  text-align: center;
+  margin: 0 0 15px;
+}
+
 .form {
   width: 280px;
+  margin: auto;
 }
 
 .input-wrapper {
@@ -44,4 +50,8 @@
 .submit:hover {
   background: #6da5ff;
   color: #FFF;
+}
+.link {
+  display: block;
+  text-align: center;
 }

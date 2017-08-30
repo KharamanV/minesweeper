@@ -1,4 +1,4 @@
-.panel__user {
+.user {
   display: flex;
   margin-bottom: 10px;
 }
@@ -6,4 +6,18 @@
   width: 200px;
   overflow: hidden;
   margin: 0;
+}
+.column {
+  margin-right: 10px;
+}
+.user-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.user-button:hover {
+  text-decoration: underline;
+}
+.user-button:focus {
+  outline: none;
 }

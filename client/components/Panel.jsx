@@ -3,9 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import CSSModules from 'react-css-modules';
 import { setUsers } from '../actions';
 import NewUser from './NewUser';
 import User from './User';
+import styles from '../styles/panel.css';
 
 class Panel extends React.Component {
   constructor() {
@@ -32,16 +34,20 @@ class Panel extends React.Component {
 
   render() {
     return (
-      <div className="app__panel">
-        <ul className="panel__options">
-          <li className="panel__item">
-            <button onClick={() => this.showUsers()}>Show userlist</button>
+      <div className="panel">
+        <ul styleName="options">
+          <li styleName="option">
+            <button styleName="option-button" onClick={() => this.showUsers()}>
+              Show userlist
+            </button>
           </li>
-          <li className="panel__item">
-            <button onClick={() => this.toggleAddPopup()}>Add user</button>
+          <li styleName="option">
+            <button styleName="option-button" onClick={() => this.toggleAddPopup()}>
+              Add user
+            </button>
           </li>
         </ul>
-        <ul className="panel__users">
+        <ul className="users">
           {this.state.showUsers && this.props.users && this.renderUsers()}
         </ul>
         {
@@ -79,4 +85,4 @@ const mapStateToProps = state => ({
   users: state.users,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Panel);
+export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(Panel, styles));
