@@ -1,33 +1,42 @@
-/* eslint-disable no-console */
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchGame } from '../actions/game';
+import { fetchGameRequest } from '../actions/game';
 import Board from '../components/Board';
 
 class Game extends Component {
   componentWillMount() {
-    this.props.fetchGame();
+    // this.props.fetchGame('59946e890ddfc046f2a04970');
   }
 
   render() {
-    const { users } = this.props;
+    const { game } = this.props;
 
     return (
       <div>
         Hello
-        <Board users={users} />
+        <Board />
       </div>
     );
   }
 }
 
-Game.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+/*Game.propTypes = {
+  game: PropTypes.shape({
+    _id: PropTypes.number,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    board: PropTypes.arrayOf(PropTypes.array),
+  }),
   fetchGame: PropTypes.func.isRequired,
-};
+};*/
 
-const mapStateToProps = ({ users }) => ({ users });
-const mapDispatchToProps = () => ({ fetchGame });
+// Game.defaultProps = { game: {} };
+
+const mapStateToProps = ({ game }) => ({ game });
+const mapDispatchToProps = dispatch => ({
+  a: dispatch({ type: 'FETCH_GAME_REQUEST', payload: '59946e890ddfc046f2a04970' }),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

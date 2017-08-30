@@ -6,13 +6,16 @@ import {
 export default (state = {}, { type, payload }) => {
   switch (type) {
     case FETCH_GAME_SUCCESS: {
-      const { square } = payload;
-      const { x, y } = square;
-      const board = [...state];
+      const board = payload.board.map(row => (
+        row.map(() => ({
+          isMine: false,
+          isRevealed: false,
+          isFlagged: false,
+          adjacentMinesCount: null,
+        }))
+      ));
 
-      board[x][y] = square;
-
-      return board;
+      return { ...payload, board };
     }
     case FETCH_GAME_FAILURE:
     default:

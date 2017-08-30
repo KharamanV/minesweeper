@@ -10,7 +10,7 @@ const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlug
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
-  entry: ['./client/index.jsx'],
+  entry: ['babel-polyfill', './client/index.jsx'],
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),

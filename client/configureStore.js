@@ -1,9 +1,19 @@
 import { createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
-import mineSweeper from './reducers';
+import rootReducer from './reducers';
+import rootSaga from './sagas';
 
-export default initialState => createStore(
-  mineSweeper,
-  initialState,
-  applyMiddleware(logger),
-);
+const sagaMiddleware = createSagaMiddleware();
+
+export default (initialState) => {
+  const store = createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware(logger, sagaMiddleware),
+  );
+
+  sagaMiddleware.run(rootSaga);
+
+  return store;
+};

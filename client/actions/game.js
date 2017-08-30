@@ -2,11 +2,14 @@ export const FETCH_GAME_REQUEST = 'FETCH_GAME_REQUEST';
 export const FETCH_GAME_SUCCESS = 'FETCH_GAME_SUCCESS';
 export const FETCH_GAME_FAILURE = 'FETCH_GAME_FAILURE';
 
-export const fetchGame = () => ({ type: FETCH_GAME_REQUEST });
+export const fetchGameRequest = presetId => ({
+  type: FETCH_GAME_REQUEST,
+  payload: presetId,
+});
 
-export const fetchGameSuccess = board => ({
+export const fetchGameSuccess = game => ({
   type: FETCH_GAME_SUCCESS,
-  payload: board,
+  payload: game,
 });
 
 export const fetchGameFailure = error => ({
