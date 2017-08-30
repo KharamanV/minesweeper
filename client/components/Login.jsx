@@ -83,7 +83,7 @@ SignIn.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  auth: state.isAuthenticated,
+  auth: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = dispatch => ({

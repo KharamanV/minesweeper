@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { setState } from '../actions';
+import { addUser } from '../actions';
 import styles from '../styles/newUser.css';
 
 class NewUser extends React.Component {
@@ -25,21 +25,30 @@ class NewUser extends React.Component {
   setRole(e) {
     this.setState({ role: e.target.value });
   }
-
+  toggleAddPopup(e) {
+    if (e.target.classList.contains('popup')) {
+      this.props.toggleAddPopup();
+    }
+  }
+  newUser(e, username, password, role) {
+    e.preventDefault();
+    this.props.toggleAddPopup();
+    this.props.newUser(username, password, role);
+  }
   render() {
     return (
       <div
         className="popup popup-new-user"
         styleName="popup"
         role="presentation"
-        onClick={e => this.props.closePopup(e)}
+        onClick={e => this.toggleAddPopup(e)}
       >
         <div className="popup__wrapper">
           New User
           <form
             className="popup__form"
             onSubmit={e =>
-              this.props.addUser(e, this.state.username, this.state.password, this.state.role)}
+              this.newUser(e, this.state.username, this.state.password, this.state.role)}
           >
             <input
               id="username"
@@ -74,28 +83,25 @@ class NewUser extends React.Component {
 }
 
 NewUser.propTypes = {
-  addUser: PropTypes.func.isRequired,
-  closePopup: PropTypes.func.isRequired,
+  newUser: PropTypes.func.isRequired,
+  toggleAddPopup: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  closePopup: (e) => {
-    if (e.target.classList.contains('popup')) {
-      dispatch(setState({ showAdd: false }));
-    }
+  toggleAddPopup() {
+    ownProps.toggleAddPopup();
   },
-  addUser: (e, username, password, role) => {
-    e.preventDefault();
+  newUser(username, password, role) {
     axios.post('/api/users/add', { username, password, role }).then((response) => {
       const message = response.data;
       if (message.status !== 'error') {
-        dispatch(setState({ users: [...ownProps.users, message.user], showAdd: false }));
+        dispatch(addUser(message.user));
       } else {
         alert(message.text);
       }
     });
   } });
-// const mapStateToProps = state => ({
+// const mapStateToProps = (state, ownProps) => ({
 //   username: state.username,
 // });
 export default connect(null, mapDispatchToProps)(CSSModules(NewUser, styles));

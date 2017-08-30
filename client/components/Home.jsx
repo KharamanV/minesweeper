@@ -24,7 +24,7 @@ Home.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  auth: state.isAuthenticated,
+  auth: state.auth.isAuthenticated,
 });
 
 export default connect(mapStateToProps)(Home);

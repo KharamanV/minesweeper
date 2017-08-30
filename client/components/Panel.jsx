@@ -4,57 +4,68 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { setState } from '../actions';
+import { setUsers } from '../actions';
 import NewUser from './NewUser';
 import User from './User';
 
-const getUsers = (users) => {
-  const userList = [];
-  users.forEach(user => userList.push(
-    <User key={user.id} user={user} />,
-  ));
-  return userList;
-};
 
-const Panel = props => (
-  <div className="app__panel">
-    <ul className="panel__options">
-      <li className="panel__item">
-        <button onClick={() => props.showUsers()}>Show userlist</button>
-      </li>
-      <li className="panel__item">
-        <button onClick={() =>
-          props.showAddPopup(true)}
-        >
-          Add user
-        </button>
-      </li>
-    </ul>
-    <ul className="panel__users">
-      {props.showUserList && props.users && getUsers(props.users)}
-    </ul>
-    {props.showAdd && <NewUser users={props.users} />}
-  </div>
-);
+class Panel extends React.Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
+  showUsers() {
+    this.setState({ showUsers: !this.state.showUsers });
+    this.props.getUsers();
+  }
+  toggleAddPopup() {
+    this.setState({ showAddPopup: !this.state.showAddPopup });
+  }
+  renderUsers() {
+    const userList = [];
+    this.props.users.forEach(user => userList.push(
+      <User key={user.id} user={user} />,
+    ));
+    return userList;
+  }
+  render() {
+    return (
+      <div className="app__panel">
+        <ul className="panel__options">
+          <li className="panel__item">
+            <button onClick={() => this.showUsers()}>Show userlist</button>
+          </li>
+          <li className="panel__item">
+            <button onClick={() => this.toggleAddPopup()}>
+              Add user
+            </button>
+          </li>
+        </ul>
+        <ul className="panel__users">
+          {this.state.showUsers && this.props.users && this.renderUsers()}
+        </ul>
+        {this.state.showAddPopup &&
+          <NewUser toggleAddPopup={() => this.toggleAddPopup()} users={this.props.users} />}
+      </div>
+    );
+  }
+}
 
 Panel.propTypes = {
   users: PropTypes.array.isRequired,
-  showUserList: PropTypes.bool.isRequired,
-  showUsers: PropTypes.func.isRequired,
-  showAdd: PropTypes.bool.isRequired,
-  showAddPopup: PropTypes.func.isRequired,
+  getUsers: PropTypes.func.isRequired,
+  // showUserList: PropTypes.bool.isRequired,
+  // showAdd: PropTypes.bool.isRequired,
+  // showAddPopup: PropTypes.func.isRequired,
 };
 
 
 const mapDispatchToProps = dispatch => ({
-  showAddPopup: (showAdd) => {
-    dispatch(setState({ showAdd }));
-  },
-  showUsers: () => {
+  getUsers: () => {
     axios.get('/api/users').then((response) => {
       const message = response.data;
       if (message.status !== 'error') {
-        dispatch(setState({ users: message.users, showUserList: true }));
+        dispatch(setUsers(message.users));
       } else {
         alert(message.text);
       }
@@ -63,8 +74,6 @@ const mapDispatchToProps = dispatch => ({
 });
 const mapStateToProps = state => ({
   users: state.users,
-  showUserList: state.showUserList,
-  showAdd: state.showAdd,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Panel);

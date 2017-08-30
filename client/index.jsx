@@ -5,10 +5,14 @@ import App from './components/App';
 import configureStore from './configureStore';
 
 const store = configureStore({
-  isAuthenticated: false,
+  auth: {
+    isAuthenticated: false,
+  },
   users: [],
-  showAdd: false,
-  showUserList: false,
+  // ui: {
+  //   showAdd: false,
+  //   showUserList: false,
+  // },
 });
 
 render(

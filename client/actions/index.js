@@ -1,6 +1,11 @@
-export const setState = state => ({
-  type: 'SET_STATE',
-  state,
+export const setUsers = users => ({
+  type: 'SET_USERS',
+  users,
+});
+
+export const addUser = user => ({
+  type: 'ADD_USER',
+  user,
 });
 
 export const removeUser = id => ({
