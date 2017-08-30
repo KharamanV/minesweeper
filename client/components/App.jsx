@@ -8,6 +8,7 @@ import {
   Link,
   Switch,
 } from 'react-router-dom';
+import queryString from 'query-string';
 import { setAuth } from '../actions';
 import Home from './Home';
 import Panel from './Panel';
@@ -16,6 +17,11 @@ import request from '../api';
 
 class App extends React.Component {
   componentWillMount() {
+    const queryToken = queryString.parse(location.search).token;
+    if (queryToken) {
+      localStorage.setItem('jwt', queryToken);
+      window.history.replaceState(null, null, window.location.pathname);
+    }
     const token = localStorage.getItem('jwt');
     if (token) {
       request.get('/api/auth/')
@@ -32,7 +38,6 @@ class App extends React.Component {
   logout() {
     localStorage.removeItem('jwt');
     this.props.setAuthenticated(false);
-    // request.defaults.headers.common.Authorization = '';
   }
 
   render() {

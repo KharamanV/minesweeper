@@ -36,7 +36,11 @@ const mapDispatchToProps = dispatch => ({
     console.log(localStorage.getItem('jwt'));
     request.get('/api/auth/name')
       .then((response) => {
-        dispatch(setName(response.data.name));
+        if (response.status !== 200) {
+          console.log(response.statusText);
+        } else {
+          dispatch(setName(response.data.name));
+        }
       });
   },
 });
