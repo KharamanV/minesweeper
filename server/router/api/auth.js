@@ -42,24 +42,25 @@ passport.use(new FacebookStrategy({
     callbackURL: "http://localhost:3000/api/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    User.findOne({facebookId: profile.id}, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        user = new User({
-          facebookId: profile.id,
-          name: profile.displayName,
-          role: 'player',
-        });
-        user.save((err) => {
-          if (err) {
-            console.log(err);
-          }
-          return done(null, user);
-        });
-      } else {
-        done(null, user);
-      }
-    });
+    User.findOne({facebookId: profile.id})
+      .then(user => {
+        if (!user) {
+          user = new User({
+            facebookId: profile.id,
+            name: profile.displayName,
+            role: 'player',
+          });
+          user.save((err) => {
+            if (err) {
+              console.log(err);
+            }
+            return done(null, user);
+          });
+        } else {
+          done(null, user);
+        }
+      })
+      .catch(err => done(err));
   }
 ));
 
@@ -69,26 +70,25 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/api/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    User.findOne({googleId: profile.id}, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        user = new User({
-          username: 'gl',
-          password: '0',
-          googleId: profile.id,
-          role: 'player',
-          _id: mongoose.Types.ObjectId(),
-        });
-        user.save((err) => {
-          if (err) {
-            console.log(err);
-          }
-          return done(null, user);
-        });
-      } else {
-        done(null, user);
-      }
-    });
+    User.findOne({googleId: profile.id})
+      .then(user => {
+        if (!user) {
+          user = new User({
+            googleId: profile.id,
+            name: profile.displayName,
+            role: 'player',
+          });
+          user.save((err) => {
+            if (err) {
+              console.log(err);
+            }
+            done(null, user);
+          });
+        } else {
+          done(null, user);
+        }
+      })
+      .catch(err => done(err));
   }
 ));
 
@@ -102,91 +102,69 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-router.get('/facebook', passport.authenticate('facebook'));
-// router.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/?token=ggg', failureRedirect: '/login' }));
-router.get('/facebook/callback', (req, res) => {
-  passport.authenticate('facebook', function(err, user, info) {
-    if (err) {
-      res.sendStatus(500);
-    }
-    if (!user) {
-      return res.sendStatus(401);
-    }
-    req.logIn(user, function(err) {
-      if (err) {
-        res.sendStatus(500);
-      }
-      const token = jwt.sign({ sub: user.id }, 'secret');
-      return res.redirect(`/?token=${token}`);
-    });
-  })(req, res);
+router.post('/', passport.authenticate('local'), (req, res) => {
+  return res.json({ token: jwt.sign({ sub: req.user.id }, config.secrets.jwt) });
 });
+
+router.get('/facebook', passport.authenticate('facebook'));
+router.get(
+  '/facebook/callback',
+  passport.authenticate('facebook'),
+  (req, res) => {
+    const token = jwt.sign({ sub: req.user.id }, config.secrets.jwt);
+    return res.redirect(`/?token=${token}`);
+  }
+);
+
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 router.get(
   '/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/',
-    failureRedirect: '/login' ,
-  })
+  passport.authenticate('google'),
+  (req, res) => {
+    const token = jwt.sign({ sub: req.user.id }, config.secrets.jwt);
+    return res.redirect(`/?token=${token}`);
+  }
 );
 
-router.post('/', (req, res) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return res.sendStatus(401);
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      
-      return res.json({ token: jwt.sign({ sub: req.user.id }, config.secrets.jwt) });
-    });
-  })(req, res);
+router.get('/', passport.authenticate('jwt'), (req, res) => {
+  User.findById(req.user.id)
+    .then(user => {
+      if (user) res.sendStatus(200);
+      else res.sendStatus(401);
+    })
+    .catch(err => console.log(err));
 });
 
-router.get('/', (req, res) => {
-  const authHeader = req.get('Authorization');
-  const token = authHeader && authHeader.replace(/^Bearer /, '');
-
-  if (token) {
-    User.findById(jwt.verify(token, config.secrets.jwt).sub)
-      .then(user => {
-        if (user) res.sendStatus(200);
-        else res.sendStatus(401);
-      });
-  } else {
-    res.sendStatus(401);
-  }
-});
-
-router.get('/name', (req, res) => {
-  const authHeader = req.get('Authorization');
-  const token = authHeader && authHeader.replace(/^Bearer /, '');
-
-  if (token) {
-    res.json({status: 'success', username: jwt.verify(token, config.secrets.jwt).sub});
-  } else {
-    res.sendStatus(401);
-  }
+router.get('/name', passport.authenticate('jwt'), (req, res) => {
+  User.findById(req.user.id)
+    .then(user => {
+      if (user) res.json({ name: user.name });
+      else res.sendStatus(401);
+    })
+    .catch(err => console.log(err));
 });
 
 router.post('/register', (req, res) => {
-  let newUser = new User({
-    username: req.body.username,
-    password: req.body.password,
-    role: 'player',
-    name: 'LocalName',
-    _id: mongoose.Types.ObjectId(),
-  });
+  User.findOne({ username: req.body.username })
+    .then(user => {
+      if (!user) {
+        let newUser = new User({
+          username: req.body.username,
+          password: req.body.password,
+          role: 'player',
+          name: req.body.name,
+          _id: mongoose.Types.ObjectId(),
+        });
 
-  newUser.save((err) => {
-    if (err) return console.log("didn't save user");
-    return res.json({ token: jwt.sign({ sub: newUser.id }, config.secrets.jwt) });
-  });
+        newUser.save((err) => {
+          if (err) return console.log("didn't save user");
+          return res.json({ token: jwt.sign({ sub: newUser.id }, config.secrets.jwt) });
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    })
+    .catch(err => console.log(err))
 });
 
 module.exports = {

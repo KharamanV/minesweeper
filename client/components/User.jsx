@@ -26,9 +26,14 @@ class User extends React.Component {
     this.setState({ username: e.target.value });
   }
 
+  setName(e) {
+    this.setState({ name: e.target.value });
+  }
+
   render() {
     return (
       <li styleName="panel__user">
+        <p styleName="id">{this.props.id}</p>
         <input
           type="text"
           className="panel__column panel__username"
@@ -39,7 +44,7 @@ class User extends React.Component {
           type="text"
           className="panel__column panel__username"
           value={this.state.name}
-          onChange={e => this.setUsername(e)}
+          onChange={e => this.setName(e)}
         />
         <select value={this.state.role} className="panel__column" onChange={e => this.setRole(e)}>
           <option value="player">Player</option>
@@ -50,8 +55,7 @@ class User extends React.Component {
             className="panel__user-button"
             onClick={() => this.props.save({
               id: this.props.id,
-              username: this.state.username,
-              role: this.state.role,
+              ...this.state,
             })}
           >
             Save
@@ -70,9 +74,6 @@ class User extends React.Component {
     );
   }
 }
-
-// const User = props => (
-// );
 
 User.propTypes = {
   username: PropTypes.string,

@@ -1,0 +1,12 @@
+.navigation {
+  padding: 20px 50px;
+  margin: 0 -15px;
+  display: flex;
+  background: #6da5ff;
+}
+.link {
+  display: block;
+  margin: 0 15px;
+  color: #FFF;
+  text-decoration: none;
+}
