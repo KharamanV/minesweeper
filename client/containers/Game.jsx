@@ -7,7 +7,7 @@ import Board from '../components/Board';
 
 class Game extends Component {
   componentWillMount() {
-    // this.props.fetchGame('59946e890ddfc046f2a04970');
+    this.props.fetchGame('59946e890ddfc046f2a04970');
   }
 
   render() {
@@ -15,28 +15,29 @@ class Game extends Component {
 
     return (
       <div>
-        Hello
-        <Board />
+        <p>Width: { game.width }</p>
+        <p>Height: { game.height }</p>
+        <Board data={game.board} />
       </div>
     );
   }
 }
 
-/*Game.propTypes = {
+Game.propTypes = {
   game: PropTypes.shape({
-    _id: PropTypes.number,
+    _id: PropTypes.string,
     width: PropTypes.number,
     height: PropTypes.number,
     board: PropTypes.arrayOf(PropTypes.array),
   }),
   fetchGame: PropTypes.func.isRequired,
-};*/
+};
 
-// Game.defaultProps = { game: {} };
+Game.defaultProps = { game: {} };
 
 const mapStateToProps = ({ game }) => ({ game });
-const mapDispatchToProps = dispatch => ({
-  a: dispatch({ type: 'FETCH_GAME_REQUEST', payload: '59946e890ddfc046f2a04970' }),
+const mapDispatchToProps = ({
+  fetchGame: fetchGameRequest,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

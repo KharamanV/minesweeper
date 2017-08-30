@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { fetchGame } from '../api/game';
 import {
@@ -9,7 +8,6 @@ import {
 
 function* fetchGameSaga({ payload }) {
   try {
-    console.log(123);
     const { data: game } = yield call(fetchGame, payload);
 
     yield put(fetchGameSuccess(game));
