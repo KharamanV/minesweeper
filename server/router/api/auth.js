@@ -145,18 +145,26 @@ router.get('/name', passport.authenticate('jwt'), (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-  let newUser = new User({
-    username: req.body.username,
-    password: req.body.password,
-    role: 'player',
-    name: 'LocalName',
-    _id: mongoose.Types.ObjectId(),
-  });
+  User.findOne({ username: req.body.username })
+    .then(user => {
+      if (!user) {
+        let newUser = new User({
+          username: req.body.username,
+          password: req.body.password,
+          role: 'player',
+          name: 'LocalName',
+          _id: mongoose.Types.ObjectId(),
+        });
 
-  newUser.save((err) => {
-    if (err) return console.log("didn't save user");
-    return res.json({ token: jwt.sign({ sub: newUser.id }, config.secrets.jwt) });
-  });
+        newUser.save((err) => {
+          if (err) return console.log("didn't save user");
+          return res.json({ token: jwt.sign({ sub: newUser.id }, config.secrets.jwt) });
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    })
+    .catch(err => console.log(err))
 });
 
 module.exports = {

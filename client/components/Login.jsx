@@ -5,7 +5,6 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { setAuth } from '../actions';
-// import request from '../api';
 import styles from '../styles/login.css';
 
 class SignIn extends React.Component {
@@ -84,14 +83,22 @@ const mapDispatchToProps = dispatch => ({
     });
   },
   signUp(credentials) {
-    axios.post('/api/auth/register', credentials).then((response) => {
-      if (response.status !== 200) {
-        alert(response.statusText);
-      } else {
-        localStorage.setItem('jwt', response.data.token);
-        dispatch(setAuth(true));
-      }
-    });
+    axios.post('/api/auth/register', credentials)
+      .then((response) => {
+        if (response.status !== 200) {
+          alert(response.statusText);
+        } else {
+          localStorage.setItem('jwt', response.data.token);
+          dispatch(setAuth(true));
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 409) {
+          alert('Username is alredy taken');
+        } else {
+          alert(err.response.statusText);
+        }
+      });
   },
 });
 
