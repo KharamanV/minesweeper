@@ -1,34 +1,43 @@
+export const SET_USERS = 'SET_USERS';
+export const ADD_USER = 'ADD_USER';
+export const REMOVE_USER = 'REMOVE_USER';
+export const UPDATE_USER = 'UPDATE_USER';
+export const SET_USERNAME = 'SET_USERNAME';
+export const SET_NAME = 'SET_NAME';
+export const SET_AUTH = 'SET_AUTH';
+
 export const setUsers = users => ({
-  type: 'SET_USERS',
+  type: SET_USERS,
   users,
 });
 
 export const addUser = user => ({
-  type: 'ADD_USER',
+  type: ADD_USER,
   user,
 });
 
 export const removeUser = id => ({
-  type: 'REMOVE_USER',
+  type: REMOVE_USER,
   id,
 });
 
 export const updateUser = user => ({
-  type: 'UPDATE_USER',
+  type: UPDATE_USER,
   user,
 });
 
 export const setUsername = name => ({
-  type: 'SET_USERNAME',
+  type: SET_USERNAME,
   username: name,
 });
 
 export const setName = name => ({
-  type: 'SET_NAME',
+  type: SET_NAME,
   name,
 });
 
 export const setAuth = auth => ({
-  type: 'SET_AUTH',
+  type: SET_AUTH,
   isAuthenticated: auth,
 });
+

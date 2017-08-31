@@ -10,31 +10,38 @@ import styles from '../styles/newUser.css';
 class NewUser extends React.Component {
   constructor() {
     super();
+
     this.state = {
       username: '',
       password: '',
       role: 'player',
     };
   }
+
   setUsername(e) {
     this.setState({ username: e.target.value });
   }
+
   setPassword(e) {
     this.setState({ password: e.target.value });
   }
+
   setRole(e) {
     this.setState({ role: e.target.value });
   }
+
   toggleAddPopup(e) {
     if (e.target.classList.contains('popup')) {
       this.props.toggleAddPopup();
     }
   }
+
   newUser(e, username, password, role) {
     e.preventDefault();
     this.props.toggleAddPopup();
     this.props.newUser(username, password, role);
   }
+
   render() {
     return (
       <div

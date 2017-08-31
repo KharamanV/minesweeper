@@ -1,5 +1,4 @@
 /* eslint-disable no-alert, no-console, react/forbid-prop-types */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -8,19 +7,21 @@ import { setUsers } from '../actions';
 import NewUser from './NewUser';
 import User from './User';
 
-
 class Panel extends React.Component {
   constructor() {
     super();
     this.state = {};
   }
+
   showUsers() {
     this.setState({ showUsers: !this.state.showUsers });
     this.props.getUsers();
   }
+
   toggleAddPopup() {
     this.setState({ showAddPopup: !this.state.showAddPopup });
   }
+
   renderUsers() {
     const userList = [];
     this.props.users.forEach(user => userList.push(
@@ -28,6 +29,7 @@ class Panel extends React.Component {
     ));
     return userList;
   }
+
   render() {
     return (
       <div className="app__panel">
@@ -36,16 +38,16 @@ class Panel extends React.Component {
             <button onClick={() => this.showUsers()}>Show userlist</button>
           </li>
           <li className="panel__item">
-            <button onClick={() => this.toggleAddPopup()}>
-              Add user
-            </button>
+            <button onClick={() => this.toggleAddPopup()}>Add user</button>
           </li>
         </ul>
         <ul className="panel__users">
           {this.state.showUsers && this.props.users && this.renderUsers()}
         </ul>
-        {this.state.showAddPopup &&
-          <NewUser toggleAddPopup={() => this.toggleAddPopup()} users={this.props.users} />}
+        {
+          this.state.showAddPopup &&
+          <NewUser toggleAddPopup={() => this.toggleAddPopup()} users={this.props.users} />
+        }
       </div>
     );
   }
@@ -64,6 +66,7 @@ const mapDispatchToProps = dispatch => ({
   getUsers: () => {
     axios.get('/api/users').then((response) => {
       const message = response.data;
+
       if (message.status !== 'error') {
         dispatch(setUsers(message.users));
       } else {

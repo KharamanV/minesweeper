@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import {
   BrowserRouter as Router,
   Route,
-  Link,
   Switch,
 } from 'react-router-dom';
 import queryString from 'query-string';
@@ -15,6 +14,8 @@ import Home from './Home';
 import Panel from './Panel';
 import Login from './Login';
 import Register from './Register';
+import Profile from './Profile';
+import Header from './Header';
 import Game from '../containers/Game';
 import request from '../api';
 import styles from '../styles/index.css';
@@ -39,28 +40,18 @@ class App extends React.Component {
     }
   }
 
-  logout() {
-    localStorage.removeItem('jwt');
-    this.props.setAuthenticated(false);
-  }
-
   render() {
     return (
       <Router>
         <div className="app">
-          <nav styleName="navigation">
-            <Link styleName="link" to="/">Home</Link>
-            {this.props.auth && <Link styleName="link" to="/admin">Admin</Link>}
-            {this.props.auth &&
-              <Link styleName="link" onClick={() => this.logout()} to="/">Logout</Link>
-            }
-          </nav>
+          <Header />
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/admin" component={Panel} />
             <Route path="/play" component={Game} />
             <Route path="/login" component={Login} />
             <Route path="/Register" component={Register} />
+            <Route path="/profile" component={Profile} />
           </Switch>
         </div>
       </Router>
@@ -69,7 +60,6 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  auth: PropTypes.bool.isRequired,
   setAuthenticated: PropTypes.func.isRequired,
 };
 
