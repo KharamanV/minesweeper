@@ -22,6 +22,13 @@ const GameSchema = new Schema({
  * Game methods
  */
 GameSchema.methods = {
+  /**
+   * @todo: Make revealedSquares array for all type of response
+   *
+   * @param x
+   * @param y
+   * @returns {*}
+   */
   revealSquare(x, y) {
     if (this.isOver) {
       return { status: 400, data: 'This game is already over' };

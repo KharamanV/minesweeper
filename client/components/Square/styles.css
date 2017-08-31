@@ -1,0 +1,22 @@
+.square {
+    width: 30px;
+    height: 30px;
+    border: 1px inset #666;
+    text-align: center;
+    cursor: pointer;
+    line-height: 30px;
+    background-color: #E4E4E4;
+    color: #000;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.square.mine {
+    background: url(http://is1.mzstatic.com/image/thumb/Purple49/v4/3b/28/82/3b2882dc-7917-c34f-8df5-6eb74e216a0e/source/1200x630bb.jpg) no-repeat center center;
+    background-size: cover;
+}
+
+.square.empty {
+    background-color: #a7a7a7;
+}

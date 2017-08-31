@@ -5,14 +5,8 @@ import App from './components/App';
 import configureStore from './configureStore';
 
 const store = configureStore({
-  auth: {
-    isAuthenticated: false,
-  },
-  users: [],
-  // ui: {
-  //   showAdd: false,
-  //   showUserList: false,
-  // },
+  auth: { isAuthenticated: false },
+  game: { isFetching: false },
 });
 
 render(

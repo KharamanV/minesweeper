@@ -20,9 +20,9 @@ export const fetchGameFailure = error => ({
   type: FETCH_GAME_FAILURE,
 });
 
-export const revealSquareRequest = (x, y) => ({
+export const revealSquareRequest = (gameId, { x, y }) => ({
   type: REVEAL_SQUARE_REQUEST,
-  payload: { x, y },
+  payload: { gameId, x, y },
 });
 
 export const revealSquareSuccess = square => ({
