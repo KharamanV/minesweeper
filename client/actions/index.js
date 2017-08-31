@@ -6,6 +6,26 @@ export const SET_USERNAME = 'SET_USERNAME';
 export const SET_NAME = 'SET_NAME';
 export const SET_AUTH = 'SET_AUTH';
 
+export const setPresets = presets => ({
+  type: 'SET_PRESETS',
+  presets,
+});
+
+export const addPreset = preset => ({
+  type: 'ADD_USER',
+  preset,
+});
+
+export const removePreset = id => ({
+  type: 'REMOVE_USER',
+  id,
+});
+
+export const updatePreset = preset => ({
+  type: 'UPDATE_USER',
+  preset,
+});
+
 export const setUsers = users => ({
   type: SET_USERS,
   users,
@@ -40,4 +60,3 @@ export const setAuth = auth => ({
   type: SET_AUTH,
   isAuthenticated: auth,
 });
-

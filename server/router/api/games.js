@@ -5,6 +5,19 @@ const Game = mongoose.model('Game');
 const User = mongoose.model('User');
 const Preset = mongoose.model('Preset');
 
+router.get('/presets', (req, res) => {
+  Preset.find()
+    .then(presets => res.json(presets.map(preset => ({
+      id: preset._id,
+      name: preset.name,
+      width: preset.width,
+      height: preset.height,
+      minesCount: preset.minesCount,
+      rewardMultiplier: preset.rewardMultiplier,
+    }))))
+    .catch(err => res.status(500).json({ err }));
+});
+
 router.post('/', async (req, res) => {
   try {
     const { preset } = req.body;
@@ -59,5 +72,7 @@ router.post('/:id/reveal', (req, res) => {
     .then(({ status, data }) => res.status(status).json(data))
     .catch(err => res.status(500).json(err.message));
 });
+
+
 
 module.exports = router;

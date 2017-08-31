@@ -4,20 +4,31 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { setUsers } from '../actions';
+import { setUsers, setPresets } from '../actions';
 import NewUser from './NewUser';
 import User from './User';
+import Preset from './Preset';
 import styles from '../styles/panel.css';
 
 class Panel extends React.Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      tab: 'users',
+    };
+  }
+  componentWillMount() {
+    this.props.getUsers();
   }
 
   showUsers() {
-    this.setState({ showUsers: !this.state.showUsers });
+    this.setState({ tab: 'users' });
     this.props.getUsers();
+  }
+
+  showPresets() {
+    this.setState({ tab: 'presets' });
+    this.props.getPresets();
   }
 
   toggleAddPopup() {
@@ -32,13 +43,28 @@ class Panel extends React.Component {
     return userList;
   }
 
+  renderPresets() {
+    const presetList = [];
+
+    this.props.presets.forEach(preset => presetList.push(
+      <Preset key={preset.id} preset={preset} />,
+    ));
+
+    return presetList;
+  }
+
   render() {
     return (
       <div className="panel">
         <ul styleName="options">
           <li styleName="option">
             <button styleName="option-button" onClick={() => this.showUsers()}>
-              Show userlist
+              Users
+            </button>
+          </li>
+          <li styleName="option">
+            <button styleName="option-button" onClick={() => this.showPresets()}>
+              Presets
             </button>
           </li>
           <li styleName="option">
@@ -47,13 +73,18 @@ class Panel extends React.Component {
             </button>
           </li>
         </ul>
-        <ul className="users">
-          {this.state.showUsers && this.props.users && this.renderUsers()}
-        </ul>
-        {
-          this.state.showAddPopup &&
-          <NewUser toggleAddPopup={() => this.toggleAddPopup()} users={this.props.users} />
+        {this.state.tab === 'users' &&
+          <ul className="users">
+            {this.props.users && this.renderUsers()}
+          </ul>
         }
+        {this.state.tab === 'presets' &&
+          <ul className="presets">
+            {this.props.presets && this.renderPresets()}
+          </ul>
+        }
+        {this.state.showAddPopup &&
+          <NewUser toggleAddPopup={() => this.toggleAddPopup()} users={this.props.users} />}
       </div>
     );
   }
@@ -61,10 +92,9 @@ class Panel extends React.Component {
 
 Panel.propTypes = {
   users: PropTypes.array.isRequired,
+  presets: PropTypes.array.isRequired,
   getUsers: PropTypes.func.isRequired,
-  // showUserList: PropTypes.bool.isRequired,
-  // showAdd: PropTypes.bool.isRequired,
-  // showAddPopup: PropTypes.func.isRequired,
+  getPresets: PropTypes.func.isRequired,
 };
 
 
@@ -80,9 +110,19 @@ const mapDispatchToProps = dispatch => ({
       }
     });
   },
+  getPresets: () => {
+    axios.get('/api/games/presets')
+      .then((response) => {
+        const message = response.data;
+        console.log(message);
+        dispatch(setPresets(message));
+      })
+      .catch(err => alert(err.response.statusText));
+  },
 });
 const mapStateToProps = state => ({
   users: state.users,
+  presets: state.presets,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(Panel, styles));

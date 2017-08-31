@@ -10,6 +10,10 @@
 .column {
   margin-right: 10px;
 }
+.column-small {
+  composes: column;
+  width: 50px;
+}
 .user-button {
   border: none;
   background: transparent;
