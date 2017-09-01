@@ -1,0 +1,26 @@
+.game-container {
+    margin: 15px;
+}
+
+.game {
+    display: inline-block;
+    text-align: center;
+}
+
+.play-button {
+    width: 30px;
+    height: 30px;
+    background: url(./face_unpressed.png) no-repeat center center;
+    background-size: cover;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.play-button:active {
+    background-image: url(./face_pressed.png);
+}
+
+.play-button.lose {
+    background-image: url(./face_lose.png);
+}

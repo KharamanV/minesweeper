@@ -1,5 +1,25 @@
 .board {
     display: inline-block;
+    position: relative;
+    border: 1px solid #808080;
+}
+
+.board::after,
+.board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 15px;
+    background: url(./border_vert.png) repeat-y;
+}
+
+.board::after {
+    right: -15px;
+}
+
+.board::before {
+    left: -15px;
 }
 
 .board-row {

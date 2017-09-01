@@ -1,22 +1,39 @@
 .square {
-    width: 30px;
-    height: 30px;
-    border: 1px inset #666;
+    width: 23px;
+    height: 23px;
     text-align: center;
     cursor: pointer;
-    line-height: 30px;
-    background-color: #E4E4E4;
+    line-height: 23px;
     color: #000;
-    font-weight: bold;
+    font-family: sans-serif;
+    font-weight: bolder;
+    font-size: 1rem;
     display: inline-block;
     vertical-align: middle;
+    box-sizing: border-box;
+    background: #bfbfbf;
+    border: 2px outset #ececec;
+}
+
+.square:active,
+.square.revealed {
+    border: solid #808080;
+    border-width: 0 1px 1px 0;
 }
 
 .square.mine {
-    background: url(http://is1.mzstatic.com/image/thumb/Purple49/v4/3b/28/82/3b2882dc-7917-c34f-8df5-6eb74e216a0e/source/1200x630bb.jpg) no-repeat center center;
-    background-size: cover;
+    background: #fe0000 url(./mine.jpg) no-repeat center center;
+    background-size: 75%;
 }
 
-.square.empty {
-    background-color: #a7a7a7;
+.square.adjacent1 {
+    color: #002bf8;
+}
+
+.square.adjacent2 {
+    color: #167d20;
+}
+
+.square.adjacent3 {
+    color: #fc0715;
 }

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
@@ -30,9 +29,18 @@ class Square extends Component {
 
   render() {
     const { data } = this.props;
+    const adjacentMines = (
+      data.isRevealed
+      && !data.isMine
+      && data.adjacentMinesCount > 0
+      && data.adjacentMinesCount
+    );
     const styleNames = classNames('square', {
       mine: data.isMine,
-      empty: data.isRevealed && data.adjacentMinesCount === 0 && !data.isMine,
+      revealed: data.isRevealed,
+      adjacent1: adjacentMines === 1,
+      adjacent2: adjacentMines === 2,
+      adjacent3: adjacentMines === 3,
     });
 
     return (
@@ -41,8 +49,7 @@ class Square extends Component {
         onClick={this.onSquareReveal}
         role="presentation"
       >
-        {data.isRevealed && data.adjacentMinesCount > 0 && data.adjacentMinesCount}
-        {data.isRevealed && data.isMine && 'X'}
+        {adjacentMines}
       </div>
     );
   }

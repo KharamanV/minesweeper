@@ -20,6 +20,7 @@ class Header extends React.Component {
           this.props.auth &&
             (
               <div>
+                <Link styleName="link" to="/play">Play</Link>
                 <Link styleName="link" to="/profile">Profile</Link>
                 <Link styleName="link" to="/admin">Admin</Link>
                 <Link styleName="link" onClick={() => this.logout()} to="/">Logout</Link>

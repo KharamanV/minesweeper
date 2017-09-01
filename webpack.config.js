@@ -26,13 +26,14 @@ const config = {
       minChunks: module => /node_modules/.test(module.resource),
     }),
     new CommonsChunkPlugin({ name: 'manifest' }),
+    new ExtractTextPlugin({
+      filename: 'master.css',
+      allChunks: true,
+      disable: !ENV_PRODUCTION,
+    }),
     new HtmlWebpackPlugin({
       template: './client/template.html',
       chunksSortMode: 'dependency',
-    }),
-    new ExtractTextPlugin({
-      filename: 'master.css',
-      allChunks: true
     }),
   ],
   module: {
@@ -43,12 +44,9 @@ const config = {
         use: ['babel-loader', 'eslint-loader'],
       },
       {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: 'css-loader?modules&localIdentName="[name]__[local]__[hash:base64:6]"'
-        }),
-      }
+        test: /\.(png|jpe?g|gif)$/,
+        use: [{ loader: 'url-loader' }],
+      },
     ],
   },
 };
@@ -57,6 +55,13 @@ if (!ENV_PRODUCTION) {
   config.devtool = 'cheap-module-source-map';
 
   config.plugins.push(new HotModuleReplacementPlugin());
+  config.module.rules.push({
+    test: /\.css$/,
+    use: [
+      'style-loader',
+      'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+    ],
+  });
 
   config.entry.unshift(
     'react-hot-loader/patch',
@@ -95,6 +100,14 @@ if (!ENV_PRODUCTION) {
 
 if (ENV_PRODUCTION) {
   config.devtool = 'hidden-source-map';
+
+  config.modules.rules.push({
+    test: /\.css$/,
+    loader: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: 'css-loader?modules&localIdentName="[name]__[local]__[hash:base64:6]"'
+    }),
+  });
 }
 
 module.exports = config;

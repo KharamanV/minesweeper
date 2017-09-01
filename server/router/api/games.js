@@ -5,6 +5,7 @@ const Game = mongoose.model('Game');
 const User = mongoose.model('User');
 const Preset = mongoose.model('Preset');
 
+// TODO: Replace _id on id
 router.get('/presets', (req, res) => {
   Preset.find()
     .then(presets => res.json(presets.map(preset => ({

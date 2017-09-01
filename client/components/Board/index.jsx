@@ -10,36 +10,40 @@ class Board extends Component {
     data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
     gameId: PropTypes.string.isRequired,
     revealSquare: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
   };
 
   static defaultProps = {
     data: [],
+    disabled: false,
   };
 
   revealSquare = (x, y) => {
-    const { gameId, revealSquare } = this.props;
+    const { gameId, revealSquare, disabled } = this.props;
 
-    revealSquare(gameId, { x, y });
+    return !disabled && revealSquare(gameId, { x, y });
   };
 
   render() {
     const { data } = this.props;
 
     return (
-      <div styleName="board">
-        {data.map((row, i) => (
-          <div key={i} styleName="board-row">
-            {row.map((square, j) => (
-              <Square
-                data={square}
-                key={square.id}
-                onReveal={this.revealSquare}
-                x={j}
-                y={i}
-              />
-            ))}
-          </div>
-        ))}
+      <div>
+        <div styleName="board">
+          {data.map((row, i) => (
+            <div key={i} styleName="board-row">
+              {row.map((square, j) => (
+                <Square
+                  data={square}
+                  key={square.id}
+                  onReveal={this.revealSquare}
+                  x={j}
+                  y={i}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
