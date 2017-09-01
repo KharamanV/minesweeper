@@ -18,6 +18,30 @@ router.get('/presets', (req, res) => {
     .catch(err => res.status(500).json({ err }));
 });
 
+router.post('/presets/add', (req, res) => {
+  Preset.create({
+    username: req.body.username,
+    password: req.body.password,
+    role: req.body.role,
+  })
+  .then((user) => {
+    res.json({ user });
+  })
+  .catch(err => res.json({status: 'error', text: 'Could not add user!'}));
+});
+
+router.post('/presets/remove', (req, res) => {
+  Preset.remove({ _id: req.body.id })
+  .then(() => res.sendStatus(200))
+  .catch(err => res.sendStatus(500));
+});
+
+router.post('/presets/update', (req, res) => {
+  Preset.updateOne({ _id: req.body.id }, { $set: req.body })
+  .then(preset => res.sendStatus(200))
+  .catch(err => res.sendStatus(500));
+});
+
 router.post('/', async (req, res) => {
   try {
     const { preset } = req.body;

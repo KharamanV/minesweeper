@@ -4,24 +4,11 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-<<<<<<< c626862f24cfe3583dffa05f4fc369c0f56bfd1e
-<<<<<<< 7dbd5d604f9287a265f1abf8b249eeebf4082835
 import { setUsers, setPresets } from '../actions';
 import NewUser from './NewUser';
 import User from './User';
 import Preset from './Preset';
 import styles from '../styles/panel.css';
-=======
-import { setUsers } from '../actions';
-=======
-import { setUsers, setPresets } from '../actions';
->>>>>>> Add basic presets management to admin panel
-import NewUser from './NewUser';
-import User from './User';
-import Preset from './Preset';
-import styles from '../styles/panel.css';
-
->>>>>>> Add basic styles
 
 class Panel extends React.Component {
   constructor() {
@@ -38,22 +25,13 @@ class Panel extends React.Component {
     this.setState({ tab: 'users' });
     this.props.getUsers();
   }
-<<<<<<< c626862f24cfe3583dffa05f4fc369c0f56bfd1e
-
-=======
->>>>>>> Add basic presets management to admin panel
   showPresets() {
     this.setState({ tab: 'presets' });
     this.props.getPresets();
   }
-<<<<<<< c626862f24cfe3583dffa05f4fc369c0f56bfd1e
-
-=======
->>>>>>> Add basic presets management to admin panel
   toggleAddPopup() {
     this.setState({ showAddPopup: !this.state.showAddPopup });
   }
-
   renderUsers() {
     const userList = [];
     this.props.users.forEach(user => userList.push(
@@ -61,7 +39,6 @@ class Panel extends React.Component {
     ));
     return userList;
   }
-
   renderPresets() {
     const presetList = [];
 

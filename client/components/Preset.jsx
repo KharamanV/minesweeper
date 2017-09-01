@@ -15,8 +15,8 @@ class Preset extends React.Component {
       name: props.name,
       width: props.width,
       height: props.height,
-      mines: props.mines,
-      multiplier: props.multiplier,
+      minesCount: props.mines,
+      rewardMultiplier: props.multiplier,
     };
   }
 
@@ -33,11 +33,11 @@ class Preset extends React.Component {
   }
 
   setMines(e) {
-    this.setState({ mines: e.target.value });
+    this.setState({ minesCount: e.target.value });
   }
 
   setMultiplier(e) {
-    this.setState({ multiplier: e.target.value });
+    this.setState({ rewardMultiplier: e.target.value });
   }
 
   render() {
@@ -66,13 +66,13 @@ class Preset extends React.Component {
         <input
           type="text"
           styleName="column-small"
-          value={this.state.mines}
+          value={this.state.minesCount}
           onChange={e => this.setMines(e)}
         />
         <input
           type="text"
           styleName="column-small"
-          value={this.state.multiplier}
+          value={this.state.rewardMultiplier}
           onChange={e => this.setMultiplier(e)}
         />
         <div styleName="column">
@@ -122,25 +122,20 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   remove: (id) => {
-    axios.post('/api/games/presets/remove', { id }).then((response) => {
-      const message = response.data;
-      if (message.status !== 'error') {
+    axios.post('/api/games/presets/remove', { id })
+      .then((response) => {
+        alert(response.statusText);
         dispatch(removePreset(id));
-      } else {
-        alert(message.text);
-      }
-    });
+      })
+      .catch(err => alert(err.response.statusText));
   },
-  save: (user) => {
-    axios.post('/api/games/presets/update', user).then((response) => {
-      const message = response.data;
-      if (message.status !== 'error') {
-        alert(message.status);
-        dispatch(updatePreset(user));
-      } else {
-        alert(message.text);
-      }
-    });
+  save: (preset) => {
+    axios.post('/api/games/presets/update', preset)
+      .then((response) => {
+        alert(response.statusText);
+        dispatch(updatePreset(preset));
+      })
+      .catch(err => alert(err.response.statusText));
   },
 });
 

@@ -5,24 +5,28 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const SET_USERNAME = 'SET_USERNAME';
 export const SET_NAME = 'SET_NAME';
 export const SET_AUTH = 'SET_AUTH';
+export const SET_PRESETS = 'SET_PRESETS';
+export const ADD_PRESET = 'ADD_PRESET';
+export const REMOVE_PRESET = 'REMOVE_PRESET';
+export const UPDATE_PRESET = 'UPDATE_PRESET';
 
 export const setPresets = presets => ({
-  type: 'SET_PRESETS',
+  type: SET_PRESETS,
   presets,
 });
 
 export const addPreset = preset => ({
-  type: 'ADD_USER',
+  type: ADD_PRESET,
   preset,
 });
 
 export const removePreset = id => ({
-  type: 'REMOVE_USER',
+  type: REMOVE_PRESET,
   id,
 });
 
 export const updatePreset = preset => ({
-  type: 'UPDATE_USER',
+  type: UPDATE_PRESET,
   preset,
 });
 
