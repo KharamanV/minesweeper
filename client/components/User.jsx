@@ -5,17 +5,25 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { removeUser, updateUser } from '../actions';
+import { removeUser, updateUser, addUser } from '../actions';
 import styles from '../styles/user.css';
 
 class User extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      username: props.username,
-      name: props.name,
-      role: props.role,
-    };
+    this.state = props.user ?
+      {
+        username: props.user.username || '',
+        password: '',
+        name: props.user.name || '',
+        role: props.user.role,
+      } :
+      {
+        username: '',
+        password: '',
+        name: '',
+        role: 'player',
+      };
   }
 
   setRole(e) {
@@ -26,6 +34,10 @@ class User extends React.Component {
     this.setState({ username: e.target.value });
   }
 
+  setPassword(e) {
+    this.setState({ password: e.target.value });
+  }
+
   setName(e) {
     this.setState({ name: e.target.value });
   }
@@ -33,12 +45,18 @@ class User extends React.Component {
   render() {
     return (
       <li styleName="user">
-        <p styleName="id">{this.props.id}</p>
+        <p styleName="id">{this.props.user ? this.props.user.id : 'New user:'}</p>
         <input
           type="text"
           styleName="column"
           value={this.state.username}
           onChange={e => this.setUsername(e)}
+        />
+        <input
+          type="text"
+          styleName="column"
+          value={this.state.password}
+          onChange={e => this.setPassword(e)}
         />
         <input
           type="text"
@@ -53,10 +71,13 @@ class User extends React.Component {
         <div styleName="column">
           <button
             styleName="user-button"
-            onClick={() => this.props.save({
-              id: this.props.id,
-              ...this.state,
-            })}
+            onClick={this.props.user
+              ? () => this.props.save({
+                id: this.props.user.id,
+                ...this.state,
+              }, () => this.setState({ password: '' }))
+              : () => this.props.create(this.state)
+            }
           >
             Save
           </button>
@@ -64,7 +85,10 @@ class User extends React.Component {
         <div styleName="column">
           <button
             styleName="user-button"
-            onClick={() => this.props.remove(this.props.id)}
+            onClick={this.props.user
+              ? () => this.props.remove(this.props.user.id)
+              : () => this.props.cancel()
+            }
           >
             Remove
           </button>
@@ -76,27 +100,25 @@ class User extends React.Component {
 }
 
 User.propTypes = {
-  username: PropTypes.string,
-  name: PropTypes.string,
-  role: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    username: PropTypes.string,
+    password: PropTypes.string,
+    name: PropTypes.string,
+    role: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+  }),
   remove: PropTypes.func.isRequired,
+  cancel: PropTypes.func,
+  create: PropTypes.func.isRequired,
   save: PropTypes.func.isRequired,
 };
 
 User.defaultProps = {
-  username: '',
-  name: '',
+  user: null,
+  cancel: null,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  username: ownProps.user.username,
-  name: ownProps.user.name,
-  role: ownProps.user.role,
-  id: ownProps.user.id,
-});
-
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
   remove: (id) => {
     axios.post('/api/users/remove', { id }).then((response) => {
       const message = response.data;
@@ -107,17 +129,25 @@ const mapDispatchToProps = dispatch => ({
       }
     });
   },
-  save: (user) => {
-    axios.post('/api/users/update', user).then((response) => {
-      const message = response.data;
-      if (message.status !== 'error') {
-        alert(message.status);
-        dispatch(updateUser(user));
-      } else {
-        alert(message.text);
-      }
-    });
+  save: (user, resetPassword) => {
+    axios.put('/api/users/update', user)
+      .then((response) => {
+        alert(response.statusText);
+        console.log(response.data);
+        dispatch(updateUser(response.data));
+        resetPassword();
+      })
+      .catch(err => alert(err.response.statusText));
+  },
+  create(user) {
+    axios.post('/api/users/add', user)
+      .then((response) => {
+        const message = response.data;
+        ownProps.cancel();
+        dispatch(addUser(message));
+      })
+      .catch(err => alert(err.response.statusText));
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(User, styles));
+export default connect(null, mapDispatchToProps)(CSSModules(User, styles));

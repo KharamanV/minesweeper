@@ -21,3 +21,23 @@
 .option-button:focus {
   outline: none;
 }
+.user {
+  display: flex;
+  margin-bottom: 10px;
+}
+.id {
+  width: 200px;
+  overflow: hidden;
+  margin: 0;
+  flex-shrink: 0;
+}
+.column {
+  width: 150px;
+  margin: 0;
+  margin-right: 10px;
+  display: block;
+}
+.column-small {
+  composes: column;
+  width: 50px;
+}

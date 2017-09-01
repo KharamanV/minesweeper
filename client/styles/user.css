@@ -6,9 +6,13 @@
   width: 200px;
   overflow: hidden;
   margin: 0;
+  flex-shrink: 0;
 }
 .column {
+  margin: 0;
   margin-right: 10px;
+  width: 150px;
+  display: block;
 }
 .column-small {
   composes: column;

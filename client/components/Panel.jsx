@@ -5,7 +5,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { setUsers, setPresets } from '../actions';
-import NewUser from './NewUser';
+// import NewUser from './NewUser';
 import User from './User';
 import Preset from './Preset';
 import styles from '../styles/panel.css';
@@ -29,8 +29,8 @@ class Panel extends React.Component {
     this.setState({ tab: 'presets' });
     this.props.getPresets();
   }
-  toggleAddPopup() {
-    this.setState({ showAddPopup: !this.state.showAddPopup });
+  toggleAddUser() {
+    this.setState({ showAddUser: !this.state.showAddUser });
   }
   renderUsers() {
     const userList = [];
@@ -64,23 +64,37 @@ class Panel extends React.Component {
             </button>
           </li>
           <li styleName="option">
-            <button styleName="option-button" onClick={() => this.toggleAddPopup()}>
+            <button styleName="option-button" onClick={() => this.toggleAddUser()}>
               Add user
             </button>
           </li>
         </ul>
         {this.state.tab === 'users' &&
           <ul className="users">
+            <li styleName="user">
+              <p styleName="id">ID</p>
+              <p styleName="column">Username</p>
+              <p styleName="column">Password</p>
+              <p styleName="column">Display name</p>
+              <p styleName="column">Role</p>
+            </li>
             {this.props.users && this.renderUsers()}
+            {this.state.showAddUser && <User key="newUser" cancel={() => this.toggleAddUser()} />}
           </ul>
         }
         {this.state.tab === 'presets' &&
           <ul className="presets">
+            <li styleName="user">
+              <p styleName="id">ID</p>
+              <p styleName="column">Name</p>
+              <p styleName="column-small">Width</p>
+              <p styleName="column-small">Height</p>
+              <p styleName="column-small">Mines</p>
+              <p styleName="column-small">Factor</p>
+            </li>
             {this.props.presets && this.renderPresets()}
           </ul>
         }
-        {this.state.showAddPopup &&
-          <NewUser toggleAddPopup={() => this.toggleAddPopup()} users={this.props.users} />}
       </div>
     );
   }
