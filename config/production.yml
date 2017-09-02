@@ -1,3 +1,4 @@
+baseUrl: minesweeper.code-care.pro
 port: 8740
 mongo: mongodb://localhost/minesweeper
 
