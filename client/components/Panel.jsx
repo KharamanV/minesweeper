@@ -5,7 +5,6 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { setUsers, setPresets } from '../actions';
-// import NewUser from './NewUser';
 import User from './User';
 import Preset from './Preset';
 import styles from '../styles/panel.css';
@@ -31,6 +30,9 @@ class Panel extends React.Component {
   }
   toggleAddUser() {
     this.setState({ showAddUser: !this.state.showAddUser });
+  }
+  toggleAddPreset() {
+    this.setState({ showAddPreset: !this.state.showAddPreset });
   }
   renderUsers() {
     const userList = [];
@@ -63,11 +65,6 @@ class Panel extends React.Component {
               Presets
             </button>
           </li>
-          <li styleName="option">
-            <button styleName="option-button" onClick={() => this.toggleAddUser()}>
-              Add user
-            </button>
-          </li>
         </ul>
         {this.state.tab === 'users' &&
           <ul className="users">
@@ -79,7 +76,12 @@ class Panel extends React.Component {
               <p styleName="column">Role</p>
             </li>
             {this.props.users && this.renderUsers()}
-            {this.state.showAddUser && <User key="newUser" cancel={() => this.toggleAddUser()} />}
+            {this.state.showAddUser
+              ? <User key="newUser" cancel={() => this.toggleAddUser()} />
+              : <button styleName="option-button" onClick={() => this.toggleAddUser()}>
+                Add user
+              </button>
+            }
           </ul>
         }
         {this.state.tab === 'presets' &&
@@ -93,6 +95,12 @@ class Panel extends React.Component {
               <p styleName="column-small">Factor</p>
             </li>
             {this.props.presets && this.renderPresets()}
+            {this.state.showAddPreset
+              ? <Preset key="newPreset" cancel={() => this.toggleAddPreset()} />
+              : <button styleName="option-button" onClick={() => this.toggleAddPreset()}>
+                Add preset
+              </button>
+            }
           </ul>
         }
       </div>

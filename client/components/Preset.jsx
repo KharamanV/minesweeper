@@ -1,87 +1,103 @@
-/* eslint-disable no-alert, no-console, react/forbid-prop-types */
+/* eslint-disable no-alert, no-console, react/forbid-prop-types, react/no-unused-prop-types */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { removePreset, updatePreset } from '../actions';
+import { removePreset, updatePreset, addPreset } from '../actions';
 import styles from '../styles/user.css';
 
 class Preset extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      name: props.name,
-      width: props.width,
-      height: props.height,
-      minesCount: props.mines,
-      rewardMultiplier: props.multiplier,
+    this.state = props.preset ? {
+      name: props.preset.name,
+      width: props.preset.width,
+      height: props.preset.height,
+      minesCount: props.preset.minesCount,
+      rewardMultiplier: props.preset.rewardMultiplier,
+    } : {
+      name: '',
+      width: '',
+      height: '',
+      minesCount: '',
+      rewardMultiplier: '',
     };
   }
 
-  setHeight(e) {
+  handleHeight(e) {
     this.setState({ height: e.target.value });
   }
 
-  setWidth(e) {
+  handleWidth(e) {
     this.setState({ width: e.target.value });
   }
 
-  setName(e) {
+  handleName(e) {
     this.setState({ name: e.target.value });
   }
 
-  setMines(e) {
+  handleMines(e) {
     this.setState({ minesCount: e.target.value });
   }
 
-  setMultiplier(e) {
+  handleMultiplier(e) {
     this.setState({ rewardMultiplier: e.target.value });
+  }
+
+  handleSave() {
+    if (Object.values(this.state).findIndex(value => value !== '') === -1) {
+      alert('Fill all the fields');
+    } else if (this.props.preset) {
+      this.props.save({
+        id: this.props.preset.id,
+        ...this.state,
+      });
+    } else {
+      this.props.create(this.state);
+    }
   }
 
   render() {
     return (
       <li styleName="user">
-        <p styleName="id">{this.props.id}</p>
+        <p styleName="id">{this.props.preset ? this.props.preset.id : 'New preset:'}</p>
         <input
           type="text"
-          styleName="column"
+          styleName="input"
           value={this.state.name}
-          onChange={e => this.setName(e)}
+          onChange={e => this.handleName(e)}
         />
         <input
-          pattern="[0-9]"
-          type="text"
-          styleName="column-small"
+          type="number"
+          styleName="input-small"
           value={this.state.width}
-          onChange={e => this.setWidth(e)}
+          onChange={e => this.handleWidth(e)}
         />
         <input
-          type="text"
-          styleName="column-small"
+          type="number"
+          styleName="input-small"
           value={this.state.height}
-          onChange={e => this.setHeight(e)}
+          onChange={e => this.handleHeight(e)}
         />
         <input
-          type="text"
-          styleName="column-small"
+          step="1"
+          type="number"
+          styleName="input-small"
           value={this.state.minesCount}
-          onChange={e => this.setMines(e)}
+          onChange={e => this.handleMines(e)}
         />
         <input
-          type="text"
-          styleName="column-small"
+          type="number"
+          styleName="input-small"
           value={this.state.rewardMultiplier}
-          onChange={e => this.setMultiplier(e)}
+          onChange={e => this.handleMultiplier(e)}
         />
         <div styleName="column">
           <button
             styleName="user-button"
-            onClick={() => this.props.save({
-              id: this.props.id,
-              ...this.state,
-            })}
+            onClick={() => this.handleSave()}
           >
             Save
           </button>
@@ -89,7 +105,10 @@ class Preset extends React.Component {
         <div styleName="column">
           <button
             styleName="user-button"
-            onClick={() => this.props.remove(this.props.id)}
+            onClick={this.props.preset
+              ? () => this.props.remove(this.props.preset.id)
+              : () => this.props.cancel()
+            }
           >
             Remove
           </button>
@@ -101,26 +120,26 @@ class Preset extends React.Component {
 }
 
 Preset.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  mines: PropTypes.number.isRequired,
-  multiplier: PropTypes.number.isRequired,
+  preset: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    minesCount: PropTypes.number.isRequired,
+    rewardMultiplier: PropTypes.number.isRequired,
+  }),
+  cancel: PropTypes.func,
   remove: PropTypes.func.isRequired,
   save: PropTypes.func.isRequired,
+  create: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  name: ownProps.preset.name,
-  width: ownProps.preset.width,
-  height: ownProps.preset.height,
-  mines: ownProps.preset.minesCount,
-  multiplier: ownProps.preset.rewardMultiplier,
-  id: ownProps.preset.id,
-});
+Preset.defaultProps = {
+  preset: null,
+  cancel: null,
+};
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
   remove: (id) => {
     axios.post('/api/games/presets/remove', { id })
       .then((response) => {
@@ -137,6 +156,15 @@ const mapDispatchToProps = dispatch => ({
       })
       .catch(err => alert(err.response.statusText));
   },
+  create(preset) {
+    axios.post('/api/games/presets/add', preset)
+      .then((response) => {
+        const message = response.data;
+        ownProps.cancel();
+        dispatch(addPreset(message));
+      })
+      .catch(err => alert(err.response.statusText));
+  },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(Preset, styles));
+export default connect(null, mapDispatchToProps)(CSSModules(Preset, styles));

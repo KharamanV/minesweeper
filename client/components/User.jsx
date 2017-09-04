@@ -42,25 +42,38 @@ class User extends React.Component {
     this.setState({ name: e.target.value });
   }
 
+  handleSave() {
+    if (this.state.name === '') {
+      alert('Fill name field');
+    } else if (this.props.user) {
+      this.props.save({
+        id: this.props.user.id,
+        ...this.state,
+      }, () => this.setState({ password: '' }));
+    } else {
+      this.props.create(this.state);
+    }
+  }
+
   render() {
     return (
       <li styleName="user">
         <p styleName="id">{this.props.user ? this.props.user.id : 'New user:'}</p>
         <input
           type="text"
-          styleName="column"
+          styleName="input"
           value={this.state.username}
           onChange={e => this.setUsername(e)}
         />
         <input
-          type="text"
-          styleName="column"
+          type="password"
+          styleName="input"
           value={this.state.password}
           onChange={e => this.setPassword(e)}
         />
         <input
           type="text"
-          styleName="column"
+          styleName="input"
           value={this.state.name}
           onChange={e => this.setName(e)}
         />
@@ -71,13 +84,7 @@ class User extends React.Component {
         <div styleName="column">
           <button
             styleName="user-button"
-            onClick={this.props.user
-              ? () => this.props.save({
-                id: this.props.user.id,
-                ...this.state,
-              }, () => this.setState({ password: '' }))
-              : () => this.props.create(this.state)
-            }
+            onClick={() => this.handleSave()}
           >
             Save
           </button>

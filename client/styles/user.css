@@ -11,10 +11,13 @@
 .column {
   margin: 0;
   margin-right: 10px;
-  width: 150px;
   display: block;
 }
-.column-small {
+.input {
+  width: 150px;
+  composes: column;
+}
+.input-small {
   composes: column;
   width: 50px;
 }

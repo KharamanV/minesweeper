@@ -20,15 +20,18 @@ router.get('/presets', (req, res) => {
 });
 
 router.post('/presets/add', (req, res) => {
-  Preset.create({
-    username: req.body.username,
-    password: req.body.password,
-    role: req.body.role,
+  Preset.create(req.body)
+  .then((preset) => {
+    res.json({
+      id: preset._id,
+      name: preset.name,
+      width: preset.width,
+      height: preset.height,
+      minesCount: preset.minesCount,
+      rewardMultiplier: preset.rewardMultiplier,
+    });
   })
-  .then((user) => {
-    res.json({ user });
-  })
-  .catch(err => res.json({status: 'error', text: 'Could not add user!'}));
+  .catch(err => res.sendStatus(500));
 });
 
 router.post('/presets/remove', (req, res) => {

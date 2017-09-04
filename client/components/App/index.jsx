@@ -9,16 +9,17 @@ import {
 } from 'react-router-dom';
 import queryString from 'query-string';
 import CSSModules from 'react-css-modules';
-import { setAuth } from '../actions';
-import Home from './Home';
-import Panel from './Panel';
-import Login from './Login';
-import Register from './Register';
-import Profile from './Profile';
-import Header from './Header';
-import Game from '../containers/Game';
-import request from '../api';
-import styles from '../styles/index.css';
+import { setAuth } from '../../actions';
+import Home from '../Home';
+import Panel from '../Panel';
+import Login from '../Login';
+import Register from '../Register';
+import Profile from '../Profile';
+import Header from '../Header';
+import Game from '../../containers/Game';
+import request from '../../api';
+import styles from './index.css';
+import './styles.css';
 
 class App extends React.Component {
   componentWillMount() {
