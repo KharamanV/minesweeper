@@ -57,10 +57,10 @@ if (!ENV_PRODUCTION) {
   config.plugins.push(new HotModuleReplacementPlugin());
   config.module.rules.push({
     test: /\.css$/,
-    use: [
-      'style-loader',
-      'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-    ],
+    loader: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: ['css-loader?modules&localIdentName="[name]__[local]__[hash:base64:6]"', 'postcss-loader']
+    }),
   });
 
   config.entry.unshift(
@@ -105,7 +105,7 @@ if (ENV_PRODUCTION) {
     test: /\.css$/,
     loader: ExtractTextPlugin.extract({
       fallback: 'style-loader',
-      use: 'css-loader?modules&localIdentName="[name]__[local]__[hash:base64:6]"'
+      use: ['css-loader?modules&localIdentName="[name]__[local]__[hash:base64:6]"', 'postcss-loader']
     }),
   });
 }
