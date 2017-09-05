@@ -4,6 +4,7 @@ const {
   getRandom2DArrayIndexes,
   generate2DArray,
   getRandomArrayElement,
+  getRandomInt,
 } = require('../services/utils');
 
 const GameSchema = new Schema({
@@ -144,48 +145,6 @@ GameSchema.methods = {
     return this;
   },
 
-  getSafeSquaresAround(x, y) {
-    const squares = [{ x, y, adjacentMinesCount: 0 }];
-    const visitedEmptySquares = [{ x, y }];
-    const adjacentCoordinates = [
-      { x: -1, y: -1 },
-      { x: 0, y: -1 },
-      { x: 1, y: -1 },
-      { x: -1, y: 0 },
-      { x: 1, y: 0 },
-      { x: -1, y: 1 },
-      { x: 0, y: 1 },
-      { x: 1, y: 1 },
-    ];
-
-    do {
-      let { x, y } = visitedEmptySquares.pop();
-
-      adjacentCoordinates.forEach((adj, i) => {
-        x = x + adj.x;
-        y = y + adj.y;
-
-        if (!this.isArgumentsValid(x, y)) {
-          return;
-        }
-
-        const adjacentMinesCount = this.getAdjacentMinesCount(x, y);
-
-        squares.push({ x, y, adjacentMinesCount });
-
-        if (adjacentMinesCount === 0 && !this.mines.find(isPositionEqual(x, y))) {
-          visitedEmptySquares.push({ x, y });
-        }
-
-        console.log({ x, y });
-      });
-    } while (visitedEmptySquares.length !== 0);
-
-    console.log('out');
-
-    return squares;
-  },
-
   /**
    * Reveals all adjacent squares when clicking on empty square (recursively)
    *
@@ -194,7 +153,6 @@ GameSchema.methods = {
    * @returns {[null]}
    */
   getSafeSquaresAround(x, y) {
-    debugger;
     const squares = [{ x, y, adjacentMinesCount: 0 }];
     const visitedEmptySquares = [{ x, y }];
     const adjacentCoordinates = [
@@ -254,15 +212,71 @@ function isMineAdjacent(x, y) {
 
 /**
  * Returns mines in a specific location to form a stalemate
- * @todo: Create a real generation algorithm instead of preset patterns
+ * @todo: Create a real generation algorithm instead of preset patterns in SMALL PAT SITUATIONS
+ * @todo: Optimize standard pat situations algorithm
  *
- * @param options
- * @returns {{mines: Array, patSquares: Array, lockedRange: *}}
+ * @param width
+ * @param height
+ * @param minesCount
+ * @returns {*}
  */
 function generatePatSituation({ width, height, minesCount }) {
   const isSmall = minesCount < 5 || width < 5 && height < 5;
 
-  return getSmallPatSituation(width, height);
+  return isSmall ? getSmallPatSituation(width, height) : getStalemate(width, height);
+}
+
+function getStalemate(width, height) {
+  const isSmall = getRandomArrayElement([true, false]);
+
+  if (isSmall) {
+    return getSmallPatSituation(width, height);
+  }
+
+  const PAT_SIZE = 4;
+  const patSquares = [];
+  const mines = [];
+  const axis = getRandomArrayElement([
+    { x: true },
+    { y: true },
+  ]);
+
+  if (axis.y) {
+    const edge = getRandomArrayElement([0, height - 1]);
+    const startXPoint = getRandomInt(0, width - PAT_SIZE);
+    const patMines = [
+      { x: startXPoint, y: edge },
+      { x: startXPoint + 1, y: edge, isPat: true },
+      { x: startXPoint + 3, y: edge },
+      { x: startXPoint, y: edge ? edge - 1 : edge + 1 },
+      { x: startXPoint + 3, y: edge ? edge - 1 : edge + 1 },
+    ];
+
+    patSquares.push({ x: startXPoint + 2, y: edge });
+    mines.push(...patMines);
+  }
+
+  if (axis.x) {
+    const edge = getRandomArrayElement([0, width - 1]);
+    const startYPoint = getRandomInt(0, height - PAT_SIZE);
+    const patMines = [
+      { x: edge, y: startYPoint },
+      { x: edge, y: startYPoint + 1, isPat: true },
+      { x: edge, y: startYPoint + 3 },
+      { x: edge ? edge - 1 : edge + 1, y: startYPoint },
+      { x: edge ? edge - 1 : edge + 1, y: startYPoint + 3 },
+    ];
+
+    patSquares.push({ x: edge, y: startYPoint + 2 });
+    mines.push(...patMines);
+  }
+
+  const situation = { mines, patSquares };
+
+  return Object.assign(
+    situation,
+    { lockedRange: getLockedRangeOfSituation(situation, width, height) }
+  );
 }
 
 function getSmallPatSituation(width, height) {
@@ -281,7 +295,7 @@ function getSmallPatSituation(width, height) {
         { x: 2, y: 0 },
         { x: 2, y: 1 },
       ],
-      patSquares: { x: 0, y: 0 },
+      patSquares: [{ x: 0, y: 0 }],
     },
     {
       mines: [
@@ -289,8 +303,48 @@ function getSmallPatSituation(width, height) {
         { x: 0, y: 2 },
         { x: 1, y: 2 },
       ],
-      patSquares: { x: 0, y: 0 },
-    }
+      patSquares: [{ x: 0, y: 0 }],
+    },
+    {
+      mines: [
+        { x: 0, y: height - 2, isPat: true },
+        { x: 0, y: height - 3 },
+        { x: 1, y: height - 3 },
+      ],
+      patSquares: [{ x: 0, y: height - 1 }],
+    },
+    {
+      mines: [
+        { x: width - 2, y: 0, isPat: true },
+        { x: width - 3, y: 0 },
+        { x: width - 3, y: 1 },
+      ],
+      patSquares: [{ x: width - 1, y: 0 }],
+    },
+    {
+      mines: [
+        { x: width - 2, y: height - 1, isPat: true },
+        { x: width - 3, y: height - 1 },
+        { x: width - 3, y: height - 2 },
+      ],
+      patSquares: [{ x: width - 1, y: height - 1 }],
+    },
+    {
+      mines: [
+        { x: width - 1, y: 1, isPat: true },
+        { x: width - 1, y: 2 },
+        { x: width - 2, y: 2 },
+      ],
+      patSquares: [{ x: width - 1, y: 0 }],
+    },
+    {
+      mines: [
+        { x: width - 1, y: height - 2, isPat: true },
+        { x: width - 1, y: height - 3 },
+        { x: width - 2, y: height - 3 },
+      ],
+      patSquares: [{ x: width - 1, y: height - 1 }],
+    },
   ];
 
   const randomSituation = getRandomArrayElement(situations);
