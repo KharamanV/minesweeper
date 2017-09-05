@@ -3,6 +3,7 @@ const path = require('path');
 const ENV_PRODUCTION = process.env.NODE_ENV === 'production';
 const PORT = process.env.PORT || 3000;
 
+const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -54,7 +55,11 @@ const config = {
 if (!ENV_PRODUCTION) {
   config.devtool = 'cheap-module-source-map';
 
-  config.plugins.push(new HotModuleReplacementPlugin());
+  config.plugins.push(
+    new HotModuleReplacementPlugin(),
+    new NamedModulesPlugin()
+  );
+
   config.module.rules.push({
     test: /\.css$/,
     loader: ExtractTextPlugin.extract({
