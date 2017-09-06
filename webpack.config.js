@@ -28,7 +28,7 @@ const config = {
     }),
     new CommonsChunkPlugin({ name: 'manifest' }),
     new ExtractTextPlugin({
-      filename: 'master.css',
+      filename: 'styles.css',
       allChunks: true,
       disable: !ENV_PRODUCTION,
     }),
