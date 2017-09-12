@@ -67,10 +67,7 @@ describe('Game API', () => {
       .then((res) => {
         res.body.should.include({ width: 5, height: 5 }).and.have.property('_id');
         res.body.board.should.be.an('array').and.have.length(5);
-
-        return User.findById('59946e890ddfc046f2a0412a');
       })
-      .then(user => user.game.toString().should.be.a('string'))
   ));
 
   it('POST /api/games without preset', () => (

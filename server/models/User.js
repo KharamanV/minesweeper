@@ -9,7 +9,6 @@ const UserSchema = new Schema({
   role: { type: String, required: true },
   facebookId: String,
   googleId: String,
-  game: { type: Schema.Types.ObjectId, ref: 'Game' },
 });
 
 UserSchema.methods.comparePassword = function(candidatePassword) {

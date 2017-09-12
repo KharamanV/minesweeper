@@ -58,11 +58,6 @@ router.post('/', async (req, res) => {
     const { width, height, minesCount } = await Preset.findOne({ _id: preset });
     const game = new Game({ width, height });
     const { _id } = await game.generateMines(minesCount, isPat).save();
-    const user = await User.findById(req.user._id);
-
-    user.game = _id;
-
-    await user.save();
 
     res.status(201)
       .json({
@@ -100,7 +95,5 @@ router.post('/:id/reveal', (req, res) => {
     .then(({ status, data }) => res.status(status).json(data))
     .catch(err => res.status(500).json(err.message));
 });
-
-
 
 module.exports = router;
