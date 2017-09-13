@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Preset = mongoose.model('Preset');
 const { Schema } = mongoose;
 const {
   getRandom2DArrayIndexes,
@@ -7,6 +8,7 @@ const {
   getRandomInt,
 } = require('../services/utils');
 
+// TODO: Rewrite all mongoose models to classes (e.g. class GameSchema {})
 const GameSchema = new Schema({
   width: { type: Number, required: true },
   height: { type: Number, required: true },
@@ -189,6 +191,15 @@ GameSchema.methods = {
 
     return squares;
   }
+};
+
+GameSchema.statics = {
+  async create(preset, isPat) {
+    const { width, height, minesCount } = await Preset.findOne({ _id: preset });
+    const game = new this({ width, height });
+
+    return await game.generateMines(minesCount, isPat).save();
+  },
 };
 
 module.exports = mongoose.model('Game', GameSchema);
