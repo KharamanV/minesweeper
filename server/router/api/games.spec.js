@@ -9,6 +9,17 @@ const User = mongoose.model('User');
 
 describe('Game API', () => {
   const fixtures = {
+    Challenge: [
+      {
+
+      },
+    ],
+    UserChallenge: [
+      {
+        user: '59946e890ddfc046f2a0412a',
+        challenge: '',
+      },
+    ],
     User: [
       {
         _id: '59946e890ddfc046f2a0412a',
@@ -58,24 +69,6 @@ describe('Game API', () => {
   before(() => auth('test', 'password').then(jwt => token = jwt));
   after(() => clearFixtures(fixtures));
 
-  it('POST /api/games', () => (
-    request.post('/api/games')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ preset: '59946e890ddfc046f2a0496e' })
-      .expect(201)
-      .expect('Content-Type', /json/)
-      .then((res) => {
-        res.body.should.include({ width: 5, height: 5 }).and.have.property('_id');
-        res.body.board.should.be.an('array').and.have.length(5);
-      })
-  ));
-
-  it('POST /api/games without preset', () => (
-    request.post('/api/games')
-      .set('Authorization', `Bearer ${token}`)
-      .expect(400)
-  ));
-
   it('GET /api/games/:id', () => (
     request.get('/api/games/599c4b94ac26cb7ba1eb1b66')
       .set('Authorization', `Bearer ${token}`)
@@ -84,7 +77,7 @@ describe('Game API', () => {
       .expect({
         width: 5,
         height: 5,
-        minesCount: 4,
+        visitedSquares: [],
       })
   ));
 

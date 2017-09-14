@@ -1,0 +1,28 @@
+.challenge-page {
+    margin: 0 15px;
+}
+
+.play-button,
+.withdraw-button {
+    padding: 0;
+    width: 130px;
+    height: 40px;
+    border: 2px solid #1ECD97;
+    border-radius: 40px;
+    background: transparent;
+    outline: none;
+    color: #1ECD97;
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.3s, color 0.3s, width 0.3s, border-width 0.3s, border-color 0.3s;
+}
+
+.play-button:hover,
+.withdraw-button:hover {
+    background-color: #1ECD97;
+    color: #fff;
+}

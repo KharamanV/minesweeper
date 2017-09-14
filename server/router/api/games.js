@@ -46,44 +46,24 @@ router.post('/presets/update', (req, res) => {
   .catch(err => res.sendStatus(500));
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const { preset } = req.body;
+router.get('/:id', getGame);
+router.post('/:id/reveal', revealSquare);
 
-    if (!preset) {
-      return res.sendStatus(400);
-    }
+module.exports = router;
 
-    const isPat = true;
-    const { width, height, minesCount } = await Preset.findOne({ _id: preset });
-    const game = new Game({ width, height });
-    const { _id } = await game.generateMines(minesCount, isPat).save();
-
-    res.status(201)
-      .json({
-        _id,
-        width,
-        height,
-        board: generate2DArray({ width, height }),
-      });
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-router.get('/:id', (req, res) => {
+function getGame(req, res) {
   const { id: _id } = req.params;
 
   return Game.findOne({ _id })
-    .then(({ width, height, mines }) => res.json({
+    .then(({ width, height, visitedSquares }) => res.json({
       width,
       height,
-      minesCount: mines.length,
+      visitedSquares,
     }))
     .catch(err => res.status(500).json(err.message));
-});
+}
 
-router.post('/:id/reveal', (req, res) => {
+function revealSquare(req, res) {
   const { x, y } = req.body;
 
   if (!x && x !== 0 || !y && y !== 0) {
@@ -94,6 +74,4 @@ router.post('/:id/reveal', (req, res) => {
     .then(game => game.revealSquare(Number(x), Number(y)))
     .then(({ status, data }) => res.status(status).json(data))
     .catch(err => res.status(500).json(err.message));
-});
-
-module.exports = router;
+}

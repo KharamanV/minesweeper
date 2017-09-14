@@ -8,7 +8,6 @@ import styles from './styles.css';
 class Board extends Component {
   static propTypes = {
     data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
-    gameId: PropTypes.string.isRequired,
     revealSquare: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
   };
@@ -19,9 +18,9 @@ class Board extends Component {
   };
 
   revealSquare = (x, y) => {
-    const { gameId, revealSquare, disabled } = this.props;
+    const { revealSquare, disabled } = this.props;
 
-    return !disabled && revealSquare(gameId, { x, y });
+    return !disabled && revealSquare(x, y);
   };
 
   render() {

@@ -5,9 +5,9 @@ export const REVEAL_SQUARE_REQUEST = 'REVEAL_SQUARE_REQUEST';
 export const REVEAL_SQUARE_SUCCESS = 'REVEAL_SQUARE_SUCCESS';
 export const REVEAL_SQUARE_FAILURE = 'REVEAL_SQUARE_FAILURE';
 
-export const fetchGameRequest = presetId => ({
+export const fetchGameRequest = gameId => ({
   type: FETCH_GAME_REQUEST,
-  payload: presetId,
+  payload: gameId,
 });
 
 export const fetchGameSuccess = game => ({

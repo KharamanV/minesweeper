@@ -45,7 +45,7 @@ const config = {
         use: ['babel-loader', 'eslint-loader'],
       },
       {
-        test: /\.(png|jpe?g|gif)$/,
+        test: /\.(png|jpe?g|gif|woff|woff2|eot|ttf|svg)$/,
         use: [{ loader: 'url-loader' }],
       },
     ],

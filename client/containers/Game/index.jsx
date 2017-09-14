@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -9,45 +10,61 @@ import Board from '../../components/Board/index';
 class Game extends Component {
   static propTypes = {
     game: PropTypes.shape({
-      _id: PropTypes.string,
       width: PropTypes.number,
       height: PropTypes.number,
       board: PropTypes.arrayOf(PropTypes.array),
       isOver: PropTypes.bool,
       isFetching: PropTypes.bool,
     }).isRequired,
+    gameId: PropTypes.string.isRequired,
     fetchGame: PropTypes.func.isRequired,
+    onGameEnd: PropTypes.func.isRequired,
     revealSquare: PropTypes.func.isRequired,
   };
 
-  componentWillMount() {
-    this.props.fetchGame('59946e890ddfc046f2a04971');
+  componentDidMount() {
+    const { fetchGame, gameId } = this.props;
+
+    fetchGame(gameId);
+  }
+
+  componentWillUpdate(nextProps) {
+    const { fetchGame, gameId, game, onGameEnd } = this.props;
+
+    if (gameId !== nextProps.gameId) {
+      fetchGame(nextProps.gameId);
+    }
+
+    if (!game.isOver && nextProps.game.isOver) {
+      onGameEnd(!!nextProps.game.isWon);
+    }
+  }
+
+  onSquareReveal = (x, y) => {
+    const { revealSquare, gameId } = this.props;
+
+    revealSquare(gameId, { x, y });
   }
 
   render() {
-    const { game, revealSquare } = this.props;
-    const { _id: id } = game;
+    const { game, gameId } = this.props;
+
+    console.log('rendered with id = ', gameId);
 
     return (
       <div styleName="game-container">
+        <h1>{game.isOver && (game.isWon ? 'YOU WIN' : 'YOU FUCKED UP, BRO')}</h1>
+
         {/* TODO: Find solution for isFetching flow */}
         {!game.isFetching && game.board && (
           <div styleName="game">
-            <p>Size: {game.width} x {game.height}</p>
-
-            <button
-              styleName={`play-button ${game.isOver ? 'lose' : ''}`}
-              onClick={() => this.props.fetchGame('59946e890ddfc046f2a04971')}
-            />
+            <button styleName={`play-button ${game.isOver ? 'lose' : ''}`} />
 
             <Board
               data={game.board}
-              gameId={id}
-              revealSquare={revealSquare}
+              revealSquare={this.onSquareReveal}
               disabled={game.isOver}
             />
-
-            {game.isOver && <p>GAME OVER</p>}
           </div>
         )}
       </div>

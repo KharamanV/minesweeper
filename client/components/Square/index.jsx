@@ -47,6 +47,7 @@ class Square extends Component {
       <div
         styleName={styleNames}
         onClick={this.onSquareReveal}
+        onContextMenu={e => e.preventDefault()}
         role="presentation"
       >
         {adjacentMines}

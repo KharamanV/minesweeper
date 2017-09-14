@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { Link } from 'react-router-dom';
-import { setAuth } from '../actions';
-import styles from './App/index.css';
+import { setAuth } from '../../actions/index';
+import styles from './styles.css';
 
 class Header extends React.Component {
   logout() {
@@ -24,6 +24,7 @@ class Header extends React.Component {
                 <Link styleName="link" to="/profile">Profile</Link>
                 <Link styleName="link" to="/admin">Admin</Link>
                 <Link styleName="link" to="/presets">Presets</Link>
+                <Link styleName="link" to="/challenges">Challenges</Link>
                 <Link styleName="link" onClick={() => this.logout()} to="/">Logout</Link>
               </div>
             )

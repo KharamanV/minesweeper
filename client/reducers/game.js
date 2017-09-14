@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   FETCH_GAME_REQUEST,
   FETCH_GAME_SUCCESS,
@@ -14,23 +15,28 @@ export default (state = {}, { type, payload }) => {
       return { ...state, isFetching: true };
     }
     case FETCH_GAME_SUCCESS: {
-      const board = payload.board.map(row => (
-        row.map(() => {
-          squareId += 1;
+      const { width, height, visitedSquares } = payload;
+      const board = [];
 
-          return {
-            id: squareId,
-            isMine: false,
-            isRevealed: false,
-            isFlagged: false,
-            adjacentMinesCount: null,
-          };
-        })
-      ));
+      for (let i = 0; i < height; i += 1) {
+        const row = new Array(width).fill({
+          isMine: false,
+          isRevealed: false,
+          isFlagged: false,
+          adjacentMinesCount: null,
+        }).map(square => ({ ...square, id: squareId += 1 }));
+
+        board.push(row);
+      }
+
+      visitedSquares.forEach(({ x, y, adjacentMinesCount }) => {
+        const square = { adjacentMinesCount, isRevealed: true };
+
+        board[y][x] = { ...board[y][x], ...square };
+      });
 
       return {
         ...state,
-        ...payload,
         board,
         isFetching: false,
         isOver: false,
@@ -40,8 +46,15 @@ export default (state = {}, { type, payload }) => {
       return { ...state, isFetching: false };
     }
     case REVEAL_SQUARE_SUCCESS: {
-      const { x, y, adjacentMinesCount, isMine, revealedSquares } = payload;
       const board = [...state.board];
+      const {
+        x,
+        y,
+        adjacentMinesCount,
+        isMine,
+        revealedSquares,
+        isWon = false,
+      } = payload;
 
       board[y][x] = {
         ...board[y][x],
@@ -60,7 +73,12 @@ export default (state = {}, { type, payload }) => {
         });
       }
 
-      return { ...state, board, isOver: isMine };
+      return {
+        ...state,
+        board,
+        isWon,
+        isOver: isMine || isWon,
+      };
     }
     case REVEAL_SQUARE_FAILURE:
     default:

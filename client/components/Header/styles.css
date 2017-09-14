@@ -1,0 +1,12 @@
+.navigation {
+    padding: 20px 50px;
+    margin: 0 -15px;
+    display: flex;
+    background: linear-gradient(to left, #0288D1, #01579B);
+}
+
+.link {
+    margin: 0 15px;
+    color: #FFF;
+    text-decoration: none;
+}

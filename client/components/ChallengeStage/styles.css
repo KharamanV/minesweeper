@@ -1,0 +1,12 @@
+.stage {
+    border: 1px solid #000;
+    padding: 6px 12px;
+}
+
+.stage.succeeded {
+    background-color: #007d49;
+}
+
+.stage.active {
+    background-color: #adac5f;
+}

@@ -11,7 +11,7 @@ import {
 
 function* fetchGameSaga({ payload }) {
   try {
-    const { data: game } = yield call(fetchGame, payload);
+    const game = yield call(fetchGame, payload);
 
     yield put(fetchGameSuccess(game));
   } catch (err) {

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Preset = mongoose.model('Preset');
+const UserChallenge = mongoose.model('UserChallenge');
 const { Schema } = mongoose;
 const {
   getRandom2DArrayIndexes,
@@ -32,7 +33,7 @@ GameSchema.methods = {
    * @param y
    * @returns {*}
    */
-  revealSquare(x, y) {
+  async revealSquare(x, y) {
     if (this.isOver) {
       return { status: 400, data: 'This game is already over' };
     }
@@ -59,19 +60,39 @@ GameSchema.methods = {
     const isEmpty = !mine && adjacentMinesCount === 0;
     const data = { x, y, adjacentMinesCount, isMine: !!mine };
 
-    this.visitedSquares.push({ x, y });
+    this.visitedSquares.push({ x, y, adjacentMinesCount });
 
     if (mine) {
-      // TODO: Add winner
+      const userChallenge = await UserChallenge.findOne({ gameId: this._id });
+
+      userChallenge.isOver = true;
       this.isOver = true;
+
+      await userChallenge.save();
     }
 
     if (isEmpty) {
       data.revealedSquares = this.getSafeSquaresAround(x, y);
     }
 
-    return this.save()
-      .then(() => ({ data, status: 200 }));
+    const nonMineSquaresCount = this.width * this.height - this.mines.length;
+
+    if (this.visitedSquares.length > nonMineSquaresCount) console.log('FUCKED UP');
+
+    if (this.visitedSquares.length === nonMineSquaresCount) {
+      const userChallenge = await UserChallenge.findOne({ gameId: this._id });
+
+      userChallenge.gameId = null;
+      this.winner = userChallenge.user;
+      this.isOver = true;
+      data.isWon = true;
+
+      await userChallenge.save();
+    }
+
+    await this.save();
+
+    return { data, status: 200 };
   },
 
   /**
@@ -155,7 +176,7 @@ GameSchema.methods = {
    * @returns {[null]}
    */
   getSafeSquaresAround(x, y) {
-    const squares = [{ x, y, adjacentMinesCount: 0 }];
+    const squares = [...this.visitedSquares];
     const visitedEmptySquares = [{ x, y }];
     const adjacentCoordinates = [
       { x: -1, y: -1 },
@@ -180,8 +201,10 @@ GameSchema.methods = {
         }
 
         const adjacentMinesCount = this.getAdjacentMinesCount(i, j);
+        const square = { adjacentMinesCount, x: i, y: j };
 
-        squares.push({ adjacentMinesCount, x: i, y: j });
+        squares.push(square);
+        this.visitedSquares.push(square);
 
         if (adjacentMinesCount === 0 && !this.mines.find(isPositionEqual(i, j))) {
           visitedEmptySquares.push({ x: i, y: j });
