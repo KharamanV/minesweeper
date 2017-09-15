@@ -24,6 +24,7 @@ const ChallengePage = ({ data, onGame, onGameEnd, reward, onWithdraw }) => (
             />
           ))}
         </div>
+
         <div styleName="game-container">
           {data.gameId && (
             <Game
@@ -32,9 +33,12 @@ const ChallengePage = ({ data, onGame, onGameEnd, reward, onWithdraw }) => (
             />
           )}
         </div>
-        <button styleName="play-button" onClick={onGame}>Play</button>
 
-        {data.isStageWon && <button styleName="withdraw-button" onClick={onWithdraw}>Withdraw</button>}
+        <div>
+          <button styleName="play-button" onClick={onGame}>Play</button>
+
+          {data.isStageWon && <button styleName="withdraw-button" onClick={onWithdraw}>Withdraw</button>}
+        </div>
       </div>
     )}
   </div>

@@ -16,19 +16,17 @@ class Header extends React.Component {
     return (
       <nav styleName="navigation">
         <Link styleName="link home" to="/">Home</Link>
-        {
-          this.props.auth &&
-            (
-              <div styleName="links-container">
-                <Link styleName="link" to="/play">Play</Link>
-                <Link styleName="link" to="/profile">Profile</Link>
-                <Link styleName="link" to="/admin">Admin</Link>
-                <Link styleName="link" to="/presets">Presets</Link>
-                <Link styleName="link" to="/challenges">Challenges</Link>
-                <Link styleName="link" onClick={() => this.logout()} to="/">Logout</Link>
-              </div>
-            )
-        }
+
+        {this.props.auth && (
+          <div styleName="links-container">
+            <Link styleName="link" to="/play">Play</Link>
+            <Link styleName="link" to="/profile">Profile</Link>
+            <Link styleName="link" to="/admin">Admin</Link>
+            <Link styleName="link" to="/presets">Presets</Link>
+            <Link styleName="link" to="/challenges">Challenges</Link>
+            <Link styleName="link" onClick={() => this.logout()} to="/">Logout</Link>
+          </div>
+        )}
       </nav>
     );
   }
