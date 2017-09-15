@@ -34,11 +34,17 @@ class Challenges extends Component {
 
   onGameEnd = (isStageWon) => {
     const challenge = { ...this.state.challenge, isStageWon };
+    const lastStage = this.state.challenge.presets.length - 1;
+    const isChallengeComplete = lastStage === this.state.challenge.activeStage;
     const reward = isStageWon
       ? challenge.presets[challenge.activeStage].rewardMultiplier * challenge.bet
       : 0;
 
-    this.setState({ challenge, reward });
+    this.setState({
+      challenge,
+      reward,
+      isChallengeComplete,
+    });
   }
 
   onWithdraw = () => (
@@ -50,7 +56,7 @@ class Challenges extends Component {
   );
 
   render() {
-    const { challenge, reward } = this.state;
+    const { challenge, reward, isChallengeComplete } = this.state;
 
     return (
       <ChallengePage
@@ -59,6 +65,7 @@ class Challenges extends Component {
         reward={reward}
         onGameEnd={this.onGameEnd}
         onWithdraw={this.onWithdraw}
+        isComplete={isChallengeComplete}
       />
     );
   }
