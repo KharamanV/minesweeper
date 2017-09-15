@@ -7,15 +7,14 @@
     padding: 0;
     width: 130px;
     height: 40px;
-    border: 2px solid #1ECD97;
+    border: 2px solid #312450;
     border-radius: 40px;
     background: transparent;
     outline: none;
-    color: #1ECD97;
+    color: #312450;
     letter-spacing: 1px;
     font-weight: bold;
     font-size: 16px;
-    margin-top: 20px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     transition: background-color 0.3s, color 0.3s, width 0.3s, border-width 0.3s, border-color 0.3s;
@@ -23,6 +22,12 @@
 
 .play-button:hover,
 .withdraw-button:hover {
-    background-color: #1ECD97;
+    background-color: #312450;
     color: #fff;
+}
+
+.stages-container,
+.game-container {
+    display: inline-block;
+    width: 45%;
 }

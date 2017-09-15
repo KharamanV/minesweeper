@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
-import { Link } from 'react-router-dom';
+import { NavLink as Link, withRouter } from 'react-router-dom';
 import { setAuth } from '../../actions/index';
 import styles from './styles.css';
 
@@ -15,11 +15,11 @@ class Header extends React.Component {
   render() {
     return (
       <nav styleName="navigation">
-        <Link styleName="link" to="/">Home</Link>
+        <Link styleName="link home" to="/">Home</Link>
         {
           this.props.auth &&
             (
-              <div>
+              <div styleName="links-container">
                 <Link styleName="link" to="/play">Play</Link>
                 <Link styleName="link" to="/profile">Profile</Link>
                 <Link styleName="link" to="/admin">Admin</Link>
@@ -49,4 +49,10 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(Header, styles));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(
+  CSSModules(
+    Header,
+    styles,
+    { allowMultiple: true },
+  ),
+));

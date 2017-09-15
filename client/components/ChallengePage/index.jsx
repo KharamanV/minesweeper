@@ -14,25 +14,27 @@ const ChallengePage = ({ data, onGame, onGameEnd, reward, onWithdraw }) => (
         <h3>Bet: {data.bet}$</h3>
         <h4>Your reward: {reward}$</h4>
 
-        Stages: {data.presets.map((stage, index) => (
-          <ChalengeStage
-            key={stage._id}
-            data={stage}
-            active={data.gameId && data.activeStage === index}
-            succeeded={data.activeStage > index || data.activeStage === index && !data.gameId}
-          />
-        ))}
-
+        <div styleName="stages-container">
+          Stages: {data.presets.map((stage, index) => (
+            <ChalengeStage
+              key={stage._id}
+              data={stage}
+              active={data.gameId && data.activeStage === index}
+              succeeded={data.activeStage > index || data.activeStage === index && !data.gameId}
+            />
+          ))}
+        </div>
+        <div styleName="game-container">
+          {data.gameId && (
+            <Game
+              gameId={data.gameId}
+              onGameEnd={onGameEnd}
+            />
+          )}
+        </div>
         <button styleName="play-button" onClick={onGame}>Play</button>
 
         {data.isStageWon && <button styleName="withdraw-button" onClick={onWithdraw}>Withdraw</button>}
-
-        {data.gameId && (
-          <Game
-            gameId={data.gameId}
-            onGameEnd={onGameEnd}
-          />
-        )}
       </div>
     )}
   </div>

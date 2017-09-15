@@ -2,11 +2,28 @@
     padding: 20px 50px;
     margin: 0 -15px;
     display: flex;
-    background: linear-gradient(to left, #0288D1, #01579B);
+    background: #312450;
 }
 
 .link {
     margin: 0 15px;
-    color: #FFF;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 2px;
     text-decoration: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.link.active {
+    color: #fff;
+}
+
+.link.home {
+    line-height: 1.7;
+}
+
+.links-container {
+    display: inline-block;
+    vertical-align: middle;
 }
