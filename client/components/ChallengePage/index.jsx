@@ -6,7 +6,7 @@ import Game from '../../containers/Game';
 import ChalengeStage from '../ChallengeStage';
 import styles from './styles.css';
 
-const ChallengePage = ({ data, onGame, onGameEnd, reward, onWithdraw }) => (
+const ChallengePage = ({ data, onGame, onGameEnd, reward, onWithdraw, isComplete }) => (
   <div styleName="challenge-page">
     {data && (
       <div>
@@ -34,10 +34,14 @@ const ChallengePage = ({ data, onGame, onGameEnd, reward, onWithdraw }) => (
           )}
         </div>
 
-        <div>
+        <div hidden={isComplete}>
           <button styleName="play-button" onClick={onGame}>Play</button>
 
-          {data.isStageWon && <button styleName="withdraw-button" onClick={onWithdraw}>Withdraw</button>}
+          {data.isStageWon && (
+            <button styleName="withdraw-button" onClick={onWithdraw}>
+              Withdraw
+            </button>
+          )}
         </div>
       </div>
     )}
@@ -57,6 +61,7 @@ ChallengePage.propTypes = {
   onGame: PropTypes.func.isRequired,
   onWithdraw: PropTypes.func.isRequired,
   onGameEnd: PropTypes.func.isRequired,
+  isComplete: PropTypes.bool,
 };
 
 ChallengePage.defaultProps = { data: null };

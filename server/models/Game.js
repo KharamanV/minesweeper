@@ -82,7 +82,7 @@ GameSchema.methods = {
     if (this.visitedSquares.length > nonMineSquaresCount) console.log('FUCKED UP');
 
     if (isGameWon) {
-      const userChallenge = await UserChallenge.findOne({ gameId: String(this._id) })
+      const userChallenge = await UserChallenge.findOne({ gameId: this._id })
         .populate('challenge');
 
       data.isWon = true;

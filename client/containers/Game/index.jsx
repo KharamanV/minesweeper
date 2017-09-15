@@ -49,8 +49,6 @@ class Game extends Component {
   render() {
     const { game, gameId } = this.props;
 
-    console.log('rendered with id = ', gameId);
-
     return (
       <div styleName="game-container">
         <h1>{game.isOver && (game.isWon ? 'YOU WIN' : 'YOU FUCKED UP, BRO')}</h1>
