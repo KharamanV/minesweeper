@@ -17,14 +17,26 @@ class Square extends Component {
     y: PropTypes.number.isRequired,
   };
 
+  state = { isFlagged: false };
+
   onSquareReveal = () => {
     const { onReveal, x, y, data } = this.props;
 
-    if (data.isRevealed) {
+    if (data.isRevealed || this.state.isFlagged) {
       return false;
     }
 
     return onReveal(x, y);
+  };
+
+  flagSquare = (e) => {
+    e.preventDefault();
+
+    if (this.props.data.isRevealed) {
+      return false;
+    }
+
+    return this.setState({ isFlagged: !this.state.isFlagged });
   };
 
   render() {
@@ -38,6 +50,7 @@ class Square extends Component {
     const styleNames = classNames('square', {
       mine: data.isMine,
       revealed: data.isRevealed,
+      flagged: this.state.isFlagged,
       adjacent1: adjacentMines === 1,
       adjacent2: adjacentMines === 2,
       adjacent3: adjacentMines === 3,
@@ -47,7 +60,7 @@ class Square extends Component {
       <div
         styleName={styleNames}
         onClick={this.onSquareReveal}
-        onContextMenu={e => e.preventDefault()}
+        onContextMenu={this.flagSquare}
         role="presentation"
       >
         {adjacentMines}

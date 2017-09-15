@@ -11,7 +11,7 @@
     display: inline-block;
     vertical-align: middle;
     box-sizing: border-box;
-    background: #bfbfbf;
+    background: #bfbfbf no-repeat center center;
     border: 2px outset #ececec;
 }
 
@@ -24,6 +24,11 @@
 .square.mine {
     background: #fe0000 url(./mine.jpg) no-repeat center center;
     background-size: 75%;
+}
+
+.square.flagged {
+    background-image: url(./flag.png);
+    background-size: 60%;
 }
 
 .square.adjacent1 {
