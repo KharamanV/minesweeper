@@ -27,6 +27,7 @@ const GameSchema = new Schema({
  */
 GameSchema.methods = {
   /**
+   * Reveals square
    * @todo: Make revealedSquares array for all type of response
    *
    * @param x
@@ -63,7 +64,7 @@ GameSchema.methods = {
     this.visitedSquares.push({ x, y, adjacentMinesCount });
 
     if (mine) {
-      const userChallenge = await UserChallenge.findOne({ gameId: this._id });
+      const userChallenge = await UserChallenge.findOne({ gameId: String(this._id) });
 
       userChallenge.isOver = true;
       this.isOver = true;
@@ -76,16 +77,19 @@ GameSchema.methods = {
     }
 
     const nonMineSquaresCount = this.width * this.height - this.mines.length;
+    const isGameWon = this.visitedSquares.length === nonMineSquaresCount;
 
     if (this.visitedSquares.length > nonMineSquaresCount) console.log('FUCKED UP');
 
-    if (this.visitedSquares.length === nonMineSquaresCount) {
-      const userChallenge = await UserChallenge.findOne({ gameId: this._id });
+    if (isGameWon) {
+      const userChallenge = await UserChallenge.findOne({ gameId: String(this._id) })
+        .populate('challenge');
 
+      data.isWon = true;
       userChallenge.gameId = null;
+      userChallenge.isOver = userChallenge.challenge.presets.length - 1 === userChallenge.activeStage;
       this.winner = userChallenge.user;
       this.isOver = true;
-      data.isWon = true;
 
       await userChallenge.save();
     }
@@ -216,6 +220,9 @@ GameSchema.methods = {
   }
 };
 
+/**
+ * Static methods
+ */
 GameSchema.statics = {
   async create(preset, isPat) {
     const { width, height, minesCount } = await Preset.findOne({ _id: preset });

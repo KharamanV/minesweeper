@@ -73,5 +73,5 @@ function revealSquare(req, res) {
   return Game.findOne({ _id: req.params.id })
     .then(game => game.revealSquare(Number(x), Number(y)))
     .then(({ status, data }) => res.status(status).json(data))
-    .catch(err => res.status(500).json(err.message));
+    .catch(err => console.error(err) || res.status(500).json(err.message));
 }

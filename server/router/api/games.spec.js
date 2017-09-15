@@ -11,13 +11,22 @@ describe('Game API', () => {
   const fixtures = {
     Challenge: [
       {
-
+        _id: '59946e890ddfc046a2a0496a',
+        name: 'Test',
+        presets: ['59946e890ddfc046f2a0496e'],
+        bet: 1,
       },
     ],
     UserChallenge: [
       {
         user: '59946e890ddfc046f2a0412a',
-        challenge: '',
+        challenge: '59946e890ddfc046a2a0496a',
+        gameId: '599c4b94ac26cb7ba1eb1b66',
+      },
+      {
+        user: '59946e890ddfc046f2a0412a',
+        challenge: '59946e890ddfc046a2a0496a',
+        gameId: '599c4b94ac26cb7ba1eb1b67',
       },
     ],
     User: [
