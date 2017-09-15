@@ -21,12 +21,12 @@ describe('Game API', () => {
       {
         user: '59946e890ddfc046f2a0412a',
         challenge: '59946e890ddfc046a2a0496a',
-        gameId: '599c4b94ac26cb7ba1eb1b66',
+        gameId: mongoose.Types.ObjectId('599c4b94ac26cb7ba1eb1b66'),
       },
       {
         user: '59946e890ddfc046f2a0412a',
         challenge: '59946e890ddfc046a2a0496a',
-        gameId: '599c4b94ac26cb7ba1eb1b67',
+        gameId: mongoose.Types.ObjectId('599c4b94ac26cb7ba1eb1b67'),
       },
     ],
     User: [

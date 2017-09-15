@@ -64,7 +64,7 @@ GameSchema.methods = {
     this.visitedSquares.push({ x, y, adjacentMinesCount });
 
     if (mine) {
-      const userChallenge = await UserChallenge.findOne({ gameId: String(this._id) });
+      const userChallenge = await UserChallenge.findOne({ gameId: this._id });
 
       userChallenge.isOver = true;
       this.isOver = true;
