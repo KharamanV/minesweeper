@@ -1,5 +1,6 @@
-const Challenge = require('mongoose').model('Challenge');
-const presets = [[], [], [], [], [], []];
+const mongoose = require('mongoose');
+const Challenge = mongoose.model('Challenge');
+const Preset = mongoose.model('Preset');
 const names = [
   'Challenge #1',
   'Challenge #2',
@@ -11,12 +12,15 @@ const names = [
 const bets = [1, 5, 10, 25, 50, 100];
 
 module.exports = async () => {
+  const presets = await Preset.find({});
+  const presetsIds = presets.map(({ _id }) => _id);
+
   await Challenge.remove();
 
   for (let i = 0; i < bets.length; i++) {
     const challenge = new Challenge({
       name: names[i],
-      presets: presets[i],
+      presets: presetsIds,
       bet: bets[i],
     });
 

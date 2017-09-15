@@ -23,9 +23,16 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+async function runFixtures(fixtures) {
+  for (let i = 0; i < fixtures.length; i++) {
+    await fixtures[i]();
+  }
+}
+
 module.exports = {
   getRandom2DArrayIndexes,
   generate2DArray,
   getRandomInt,
   getRandomArrayElement,
+  runFixtures,
 };
