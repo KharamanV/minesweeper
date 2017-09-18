@@ -12,6 +12,7 @@ const names = [
 const bets = [1, 5, 10, 25, 50, 100];
 
 module.exports = async () => {
+  const STAGES_PER_CHALLENGE = 4;
   const presets = await Preset.find({});
   const presetsIds = presets.map(({ _id }) => _id);
 
@@ -20,7 +21,7 @@ module.exports = async () => {
   for (let i = 0; i < bets.length; i++) {
     const challenge = new Challenge({
       name: names[i],
-      presets: presetsIds,
+      presets: presetsIds.splice(0, STAGES_PER_CHALLENGE),
       bet: bets[i],
     });
 
