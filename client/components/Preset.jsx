@@ -141,7 +141,7 @@ Preset.defaultProps = {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   remove: (id) => {
-    axios.post('/api/games/presets/remove', { id })
+    axios.post('/api/presets/remove', { id })
       .then((response) => {
         alert(response.statusText);
         dispatch(removePreset(id));
@@ -149,7 +149,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       .catch(err => alert(err.response.statusText));
   },
   save: (preset) => {
-    axios.post('/api/games/presets/update', preset)
+    axios.post('/api/presets/update', preset)
       .then((response) => {
         alert(response.statusText);
         dispatch(updatePreset(preset));
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       .catch(err => alert(err.response.statusText));
   },
   create(preset) {
-    axios.post('/api/games/presets/add', preset)
+    axios.post('/api/presets/add', preset)
       .then((response) => {
         const message = response.data;
         ownProps.cancel();

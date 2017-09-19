@@ -6,46 +6,6 @@ const User = mongoose.model('User');
 const Preset = mongoose.model('Preset');
 
 // TODO: Replace _id on id
-router.get('/presets', (req, res) => {
-  Preset.find()
-    .then(presets => res.json(presets.map(preset => ({
-      id: preset._id,
-      name: preset.name,
-      width: preset.width,
-      height: preset.height,
-      minesCount: preset.minesCount,
-      rewardMultiplier: preset.rewardMultiplier,
-    }))))
-    .catch(err => res.status(500).json({ err }));
-});
-
-router.post('/presets/add', (req, res) => {
-  Preset.create(req.body)
-  .then((preset) => {
-    res.json({
-      id: preset._id,
-      name: preset.name,
-      width: preset.width,
-      height: preset.height,
-      minesCount: preset.minesCount,
-      rewardMultiplier: preset.rewardMultiplier,
-    });
-  })
-  .catch(err => res.sendStatus(500));
-});
-
-router.post('/presets/remove', (req, res) => {
-  Preset.remove({ _id: req.body.id })
-  .then(() => res.sendStatus(200))
-  .catch(err => res.sendStatus(500));
-});
-
-router.post('/presets/update', (req, res) => {
-  Preset.updateOne({ _id: req.body.id }, { $set: req.body })
-  .then(preset => res.sendStatus(200))
-  .catch(err => res.sendStatus(500));
-});
-
 router.get('/:id', getGame);
 router.post('/:id/reveal', revealSquare);
 

@@ -129,7 +129,7 @@ const mapDispatchToProps = dispatch => ({
     });
   },
   getPresets: () => {
-    axios.get('/api/games/presets')
+    axios.get('/api/presets')
       .then((response) => {
         const message = response.data;
         console.log(message);

@@ -17,9 +17,14 @@ const GameSchema = new Schema({
   mines: { type: [], default: [] },
   patSquares: { type: [], default: [] },
   visitedSquares: { type: [], default: [] },
-  startDate: { type: Date, default: Date.now, required: true },
+  startDate: { type: Date, default: Date.now, required: true, index: true },
+  time: { type: Schema.Types.Mixed, default: null },
   isOver: { type: Boolean, default: false },
-  winner: { type: Schema.Types.ObjectId, ref: 'User' },
+  clicks: { type: Number, default: 0 },
+  challenge: { type: Schema.Types.ObjectId, ref: 'Challenge', required: true },
+  stage: { type: Number, required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  isWon: { type: Boolean, default: false },
 });
 
 /**
@@ -62,6 +67,7 @@ GameSchema.methods = {
     const data = { x, y, adjacentMinesCount, isMine: !!mine };
 
     this.visitedSquares.push({ x, y, adjacentMinesCount });
+    this.incrementClick();
 
     if (mine) {
       const userChallenge = await UserChallenge.findOne({ gameId: this._id });
@@ -69,6 +75,7 @@ GameSchema.methods = {
       userChallenge.isOver = true;
       this.isOver = true;
 
+      this.setGameTime();
       await userChallenge.save();
     }
 
@@ -79,18 +86,18 @@ GameSchema.methods = {
     const nonMineSquaresCount = this.width * this.height - this.mines.length;
     const isGameWon = this.visitedSquares.length === nonMineSquaresCount;
 
-    if (this.visitedSquares.length > nonMineSquaresCount) console.log('FUCKED UP');
-
     if (isGameWon) {
       const userChallenge = await UserChallenge.findOne({ gameId: this._id })
         .populate('challenge');
+      const isChallengeWon = userChallenge.activeStage === userChallenge.challenge.presets.length - 1;
 
       data.isWon = true;
-      userChallenge.gameId = null;
+      userChallenge.gameId = isChallengeWon ? userChallenge.gameId : null;
       userChallenge.isOver = userChallenge.challenge.presets.length - 1 === userChallenge.activeStage;
-      this.winner = userChallenge.user;
+      this.isWon = true;
       this.isOver = true;
 
+      this.setGameTime();
       await userChallenge.save();
     }
 
@@ -217,18 +224,38 @@ GameSchema.methods = {
     } while (visitedEmptySquares.length !== 0);
 
     return squares;
-  }
+  },
+
+  /**
+   * Set game duration time then game is over
+   *
+   * @returns {number}
+   */
+  setGameTime() {
+    return this.time = (Date.now() - this.startDate) / 1000;
+  },
+
+  incrementClick() {
+    this.clicks += 1;
+  },
 };
 
 /**
  * Static methods
  */
 GameSchema.statics = {
-  async create(preset, isPat) {
-    const { width, height, minesCount } = await Preset.findOne({ _id: preset });
-    const game = new this({ width, height });
+  async create({ presetId, challengeId, userId, stage }, isPat) {
+    const { width, height, minesCount } = await Preset.findOne({ _id: presetId });
+    const game = new this({
+      width,
+      height,
+      stage,
+      challenge: challengeId,
+      user: userId,
+    });
 
-    return await game.generateMines(minesCount, isPat).save();
+    return await game.generateMines(minesCount, isPat)
+      .save();
   },
 };
 

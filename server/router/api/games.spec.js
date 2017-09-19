@@ -57,6 +57,9 @@ describe('Game API', () => {
           { y: 1, x: 2 },
           { y: 4, x: 1 },
         ],
+        user: '59946e890ddfc046f2a0412a',
+        challenge: '59946e890ddfc046a2a0496a',
+        stage: 0,
       },
       {
         _id: '599c4b94ac26cb7ba1eb1b67',
@@ -69,6 +72,9 @@ describe('Game API', () => {
           { y: 1, x: 2 },
           { y: 4, x: 1 },
         ],
+        user: '59946e890ddfc046f2a0412a',
+        challenge: '59946e890ddfc046a2a0496a',
+        stage: 1,
       },
     ],
   };

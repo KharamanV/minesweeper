@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
 import { fetchChallenges } from '../api/challenges';
 import Challenge from '../components/Challenge';

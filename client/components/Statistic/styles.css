@@ -1,0 +1,29 @@
+.stats-table {
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table-header {
+    font-weight: 900;
+    color: #fff;
+    background: #43287c;
+}
+
+.table-header th {
+    padding: 8px 0;
+}
+
+.table-row.win {
+    background: #80CBC4;
+}
+
+.table-row.lose {
+    background: #E57373;
+}
+
+.stats-table td {
+    padding: 6px 12px;
+}

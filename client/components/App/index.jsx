@@ -16,9 +16,9 @@ import Login from '../Login';
 import Register from '../Register';
 import Profile from '../Profile';
 import Header from '../Header/index';
-import Game from '../../containers/Game';
 import Challenges from '../../containers/Challenges';
 import ChallengePage from '../../containers/ChallengePage';
+import Statistic from '../../containers/Statistic';
 import request from '../../api';
 import styles from './styles.css';
 
@@ -50,9 +50,9 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/admin" component={Panel} />
-            <Route path="/play" component={Game} />
             <Route exact path="/challenges" component={Challenges} />
             <Route path="/challenges/:id" component={ChallengePage} />
+            <Route path="/stats" component={Statistic} />
             <Route path="/login" component={Login} />
             <Route path="/Register" component={Register} />
             <Route path="/profile" component={Profile} />

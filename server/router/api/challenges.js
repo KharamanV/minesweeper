@@ -74,7 +74,12 @@ async function playChallenge(req, res) {
 
     const presetId = challenge.presets[userChallenge.activeStage];
     const isPat = false;
-    const { _id, width, height } = await Game.create(presetId, isPat);
+    const { _id, width, height } = await Game.create({
+      presetId,
+      challengeId: req.params.id,
+      userId: req.user.id,
+      stage: userChallenge.activeStage,
+    }, isPat);
 
     userChallenge.gameId = _id;
 
@@ -82,7 +87,6 @@ async function playChallenge(req, res) {
 
     return res.json({ gameId: _id, activeStage: userChallenge.activeStage });
   } catch (err) {
-    console.log(err);
     return res.status(500).json(err.message);
   }
 }

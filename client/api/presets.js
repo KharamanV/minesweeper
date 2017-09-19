@@ -1,7 +1,7 @@
 import request from '.';
 
-export const fetchGame = gameId => (
-  request(`/api/games/${gameId}`)
+export const fethPresets = () => (
+  request('/api/presets')
     .then(({ data }) => data)
 );
 
