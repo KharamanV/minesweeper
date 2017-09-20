@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SelectBox = ({ data, title, onChange }) => (
+const SelectBox = ({ data, caption, onChange }) => (
   <select onChange={onChange}>
-    <option value="">Select {title}</option>
+    <option value="">{caption}</option>
 
     {data.map(option => (
       <option
@@ -18,7 +18,7 @@ const SelectBox = ({ data, title, onChange }) => (
 
 SelectBox.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  title: PropTypes.string.isRequired,
+  caption: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

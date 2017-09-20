@@ -6,6 +6,7 @@ import {
   REVEAL_SQUARE_SUCCESS,
   REVEAL_SQUARE_FAILURE,
 } from '../actions/game';
+import { createBoard } from '../utils/board';
 
 let squareId = 0;
 
@@ -16,24 +17,7 @@ export default (state = {}, { type, payload }) => {
     }
     case FETCH_GAME_SUCCESS: {
       const { width, height, visitedSquares } = payload;
-      const board = [];
-
-      for (let i = 0; i < height; i += 1) {
-        const row = new Array(width).fill({
-          isMine: false,
-          isRevealed: false,
-          isFlagged: false,
-          adjacentMinesCount: null,
-        }).map(square => ({ ...square, id: squareId += 1 }));
-
-        board.push(row);
-      }
-
-      visitedSquares.forEach(({ x, y, adjacentMinesCount }) => {
-        const square = { adjacentMinesCount, isRevealed: true };
-
-        board[y][x] = { ...board[y][x], ...square };
-      });
+      const board = createBoard({ width, height, visitedSquares });
 
       return {
         ...state,

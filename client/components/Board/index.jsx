@@ -8,13 +8,14 @@ import styles from './styles.css';
 class Board extends Component {
   static propTypes = {
     data: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
-    revealSquare: PropTypes.func.isRequired,
+    revealSquare: PropTypes.func,
     disabled: PropTypes.bool,
   };
 
   static defaultProps = {
     data: [],
     disabled: false,
+    revealSquare: null,
   };
 
   revealSquare = (x, y) => {

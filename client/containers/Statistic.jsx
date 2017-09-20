@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import getStats from '../api/statistic';
+import { getStats } from '../api/statistic';
 import { fethPresets } from '../api/presets';
 import Statistic from '../components/Statistic';
 import SelectBox from '../components/SelectBox';
@@ -19,12 +19,9 @@ class StatisticContainer extends Component {
 
   onPresetChange = ({ target }) => {
     const presetId = target.value;
+    const query = presetId && { preset: presetId };
 
-    if (!presetId) {
-      return false;
-    }
-
-    return getStats({ preset: presetId })
+    return getStats(query)
       .then(stats => this.setState({ stats }));
   };
 
@@ -44,7 +41,7 @@ class StatisticContainer extends Component {
     return (
       <div>
         <SelectBox
-          title="Stage"
+          caption="All stages"
           data={presets}
           onChange={this.onPresetChange}
         />

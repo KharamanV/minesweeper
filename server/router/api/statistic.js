@@ -1,9 +1,19 @@
 const mongoose = require('mongoose');
 const Game = mongoose.model('Game');
-const Challenge = mongoose.model('Challenge');
+const Preset = mongoose.model('Preset');
 const router = require('express').Router();
+const gameFields = {
+  width: 1,
+  height: 1,
+  startDate: 1,
+  time: 1,
+  isWon: 1,
+  user: 1,
+  clicks: 1,
+};
 
 router.get('/', getStats);
+router.get('/:id', getStatsById);
 
 module.exports = router;
 
@@ -13,25 +23,35 @@ async function getStats(req, res) {
     let gameQuery = null;
 
     if (presetId) {
-      const challenges = await Challenge.find({ presets: presetId })
-        .select('presets');
-      const challengeIds = [].concat(...challenges.map(({ presets }) => presets))
-        .map(id => String(id));
+      const { width, height, minesCount } = await Preset.findById(presetId);
 
-      gameQuery = Game.find({ isOver: true, challenge: { $in: challengeIds } });
-
-      console.log(challengeIds);
+      gameQuery = Game.find({
+        width,
+        height,
+        isOver: true,
+        mines: { $size: minesCount },
+      });
     } else {
       gameQuery = Game.find({ isOver: true });
     }
 
     const games = await gameQuery
       .sort('-startDate')
-      .select('width height startDate time isWon user clicks')
+      .select(gameFields)
       .populate('user', 'username');
 
     res.json(games);
   } catch (err) {
     res.status(500).json(err.message);
   }
+}
+
+function getStatsById(req, res) {
+  const { id } = req.params;
+
+  Game.findById(id)
+    .select(Object.assign(gameFields, { visitedSquares: 1 }))
+    .populate('user', 'username')
+    .then(game => res.json(game))
+    .catch(err => res.status(500).json(err.message));
 }

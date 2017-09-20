@@ -11,8 +11,8 @@ const {
 
 // TODO: Rewrite all mongoose models to classes (e.g. class GameSchema {})
 const GameSchema = new Schema({
-  width: { type: Number, required: true },
-  height: { type: Number, required: true },
+  width: { type: Number, required: true, index: true },
+  height: { type: Number, required: true, index: true },
   // TODO: Add Position model with adjacentMines virtual
   mines: { type: [], default: [] },
   patSquares: { type: [], default: [] },

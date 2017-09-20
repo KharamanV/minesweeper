@@ -19,6 +19,7 @@ import Header from '../Header/index';
 import Challenges from '../../containers/Challenges';
 import ChallengePage from '../../containers/ChallengePage';
 import Statistic from '../../containers/Statistic';
+import StatisticDetail from '../../containers/StatisticDetail';
 import request from '../../api';
 import styles from './styles.css';
 
@@ -52,7 +53,8 @@ class App extends React.Component {
             <Route path="/admin" component={Panel} />
             <Route exact path="/challenges" component={Challenges} />
             <Route path="/challenges/:id" component={ChallengePage} />
-            <Route path="/stats" component={Statistic} />
+            <Route exact path="/stats" component={Statistic} />
+            <Route path="/stats/:id" component={StatisticDetail} />
             <Route path="/login" component={Login} />
             <Route path="/Register" component={Register} />
             <Route path="/profile" component={Profile} />

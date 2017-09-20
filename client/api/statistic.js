@@ -1,8 +1,11 @@
 import request from '.';
 
-const getStats = params => (
+export const getStats = params => (
   request('/api/stats', { params })
     .then(({ data }) => data)
 );
 
-export default getStats;
+export const getStat = statId => (
+  request(`/api/stats/${statId}`)
+    .then(({ data }) => data)
+);

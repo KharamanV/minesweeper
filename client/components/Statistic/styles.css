@@ -6,21 +6,38 @@
     width: 100%;
 }
 
-.table-header {
+.title-list {
     font-weight: 900;
     color: #fff;
     background: #43287c;
+    padding: 0;
+    margin: 0;
+}
+
+.title-list li {
+    display: inline-block;
+    margin-right: 20px;
 }
 
 .table-header th {
     padding: 8px 0;
 }
 
-.table-row.win {
+.row {
+    display: block;
+    text-decoration: none;
+    color: #000;
+}
+
+.row span {
+    padding-right: 30px;
+}
+
+.row.win {
     background: #80CBC4;
 }
 
-.table-row.lose {
+.row.lose {
     background: #E57373;
 }
 

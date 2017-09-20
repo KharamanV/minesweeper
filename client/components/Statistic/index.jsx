@@ -2,36 +2,44 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 import styles from './styles.css';
 
 const Statistic = ({ data }) => (
-  <table styleName="stats-table">
-    <thead>
-      <tr styleName="table-header">
-        <th>#</th>
-        <th>User</th>
-        <th>Size</th>
-        <th>Time</th>
-        <th>Clicks</th>
-        <th>Start date</th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.map((stat, index) => (
-        <tr
-          styleName={`table-row ${stat.isWon ? 'win' : 'lose'}`}
-          key={stat._id}
-        >
-          <td>{index + 1}</td>
-          <td>{stat.user.username}</td>
-          <td>{stat.width}x{stat.height}</td>
-          <td>{stat.time}s</td>
-          <td>{stat.clicks}</td>
-          <td>{moment(stat.startDate).format('LL')}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <div>
+    {data.length
+      ? (
+        <div>
+          <ul styleName="title-list">
+            <li>#</li>
+            <li>User</li>
+            <li>Size</li>
+            <li>Time</li>
+            <li>Clicks</li>
+            <li>Start date</li>
+          </ul>
+
+          <div>
+            {data.map((stat, index) => (
+              <Link
+                styleName={`row ${stat.isWon ? 'win' : 'lose'}`}
+                key={stat._id}
+                to={`/stats/${stat._id}`}
+              >
+                <span>{index + 1}</span>
+                <span>{stat.user.username}</span>
+                <span>{stat.width}x{stat.height}</span>
+                <span>{stat.time}s</span>
+                <span>{stat.clicks}</span>
+                <span>{moment(stat.startDate).format('LL')}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )
+      : <h3>There are no stages</h3>
+    }
+  </div>
 );
 
 Statistic.propTypes = { data: PropTypes.arrayOf(PropTypes.object) };
