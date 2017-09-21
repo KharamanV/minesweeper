@@ -1,4 +1,4 @@
-/* eslint-disable no-alert, no-console */
+/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -16,12 +16,16 @@ import Login from '../Login';
 import Register from '../Register';
 import Profile from '../Profile';
 import Header from '../Header/index';
-import Challenges from '../../containers/Challenges';
+import ChallengesContainer from '../../containers/Challenges';
+import AdminChallengesContainer from '../../containers/Admin/Challenges';
 import ChallengePage from '../../containers/ChallengePage';
 import Statistic from '../../containers/Statistic';
 import StatisticDetail from '../../containers/StatisticDetail';
 import request from '../../api';
 import styles from './styles.css';
+import Challenge from '../Challenge';
+import AdminChallenge from '../Admin/Challenge';
+import ChallengeEditContainer from '../../containers/Admin/ChallengeEdit';
 
 class App extends React.Component {
   componentWillMount() {
@@ -50,8 +54,23 @@ class App extends React.Component {
           <Header />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/admin" component={Panel} />
-            <Route exact path="/challenges" component={Challenges} />
+            <Route exact path="/admin" component={Panel} />
+            <Route
+              exact
+              path="/admin/challenges"
+              render={() => <ChallengesContainer component={AdminChallenge} />}
+            />
+            <Route
+              exact
+              path="/admin/challenges/:id"
+              component={AdminChallengesContainer}
+            />
+            <Route path="/admin/challenges/:id/edit" component={ChallengeEditContainer} />
+            <Route
+              exact
+              path="/challenges"
+              render={() => <ChallengesContainer component={Challenge} />}
+            />
             <Route path="/challenges/:id" component={ChallengePage} />
             <Route exact path="/stats" component={Statistic} />
             <Route path="/stats/:id" component={StatisticDetail} />
@@ -79,4 +98,6 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CSSModules(App, styles));
+export default connect(mapStateToProps, mapDispatchToProps)(
+  CSSModules(App, styles),
+);

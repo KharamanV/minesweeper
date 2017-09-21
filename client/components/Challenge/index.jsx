@@ -2,17 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const Challenge = ({ data }) => {
-  const { _id: id } = data;
-
-  return (
-    <div>
-      <Link to={`/challenges/${id}`}>
-        {data.name}
-      </Link>
-    </div>
-  );
-};
+const Challenge = ({ data }) => (
+  <div>
+    <Link to={`/challenges/${data._id}`}>
+      {data.name}
+    </Link>
+  </div>
+);
 
 Challenge.propTypes = {
   data: PropTypes.shape({

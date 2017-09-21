@@ -8,6 +8,7 @@ const { generate2DArray } = require('../../services/utils');
 
 router.get('/', getChallenges);
 router.get('/:id', getChallenge);
+router.put('/:id', editChallenge)
 router.get('/:id/user', getUserChallenge);
 router.post('/:id/play', playChallenge);
 router.post('/:id/withdraw', withdrawChallenge);
@@ -42,6 +43,18 @@ function getUserChallenge(req, res) {
 
       return res.json({ activeStage, gameId });
     })
+    .catch(err => res.status(500).json(err.message));
+}
+
+function editChallenge(req, res) {
+  const { challenge } = req.body;
+
+  if (!challenge) {
+    return res.sendStatus(404);
+  }
+
+  Challenge.findByIdAndUpdate(req.params.id, challenge)
+    .then(challenge => res.json(challenge))
     .catch(err => res.status(500).json(err.message));
 }
 

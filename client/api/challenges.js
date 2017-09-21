@@ -31,3 +31,8 @@ export const withdrawChallenge = challengeId => (
   request.post(`/api/challenges/${challengeId}/withdraw`)
     .then(({ data }) => data)
 );
+
+export const editChallenge = (challengeId, challenge) => (
+  request.put(`/api/challenges/${challengeId}`, { challenge })
+    .then(({ data }) => data)
+);

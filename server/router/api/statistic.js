@@ -19,11 +19,15 @@ module.exports = router;
 
 async function getStats(req, res) {
   try {
-    const { preset: presetId } = req.query;
+    const { preset, challenge } = req.query;
     let gameQuery = null;
 
-    if (presetId) {
-      const { width, height, minesCount } = await Preset.findById(presetId);
+    if (!preset && !challenge) {
+      gameQuery = Game.find({ isOver: true });
+    }
+
+    if (preset) {
+      const { width, height, minesCount } = await Preset.findById(preset);
 
       gameQuery = Game.find({
         width,
@@ -31,8 +35,10 @@ async function getStats(req, res) {
         isOver: true,
         mines: { $size: minesCount },
       });
-    } else {
-      gameQuery = Game.find({ isOver: true });
+    }
+
+    if (challenge) {
+      gameQuery = Game.find({ challenge });
     }
 
     const games = await gameQuery

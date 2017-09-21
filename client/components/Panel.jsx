@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CSSModules from 'react-css-modules';
 import { setUsers, setPresets } from '../actions';
@@ -64,6 +65,11 @@ class Panel extends React.Component {
             <button styleName="option-button" onClick={() => this.showPresets()}>
               Presets
             </button>
+          </li>
+          <li styleName="option">
+            <Link to="/admin/challenges">
+              Challenges
+            </Link>
           </li>
         </ul>
         {this.state.tab === 'users' &&
