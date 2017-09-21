@@ -12,13 +12,11 @@ class Preset extends React.Component {
   constructor(props) {
     super(props);
     this.state = props.preset ? {
-      name: props.preset.name,
       width: props.preset.width,
       height: props.preset.height,
       minesCount: props.preset.minesCount,
       rewardMultiplier: props.preset.rewardMultiplier,
     } : {
-      name: '',
       width: '',
       height: '',
       minesCount: '',
@@ -34,10 +32,6 @@ class Preset extends React.Component {
     this.setState({ width: e.target.value });
   }
 
-  handleName(e) {
-    this.setState({ name: e.target.value });
-  }
-
   handleMines(e) {
     this.setState({ minesCount: e.target.value });
   }
@@ -51,7 +45,7 @@ class Preset extends React.Component {
       alert('Fill all the fields');
     } else if (this.props.preset) {
       this.props.save({
-        id: this.props.preset.id,
+        _id: this.props.preset._id,
         ...this.state,
       });
     } else {
@@ -62,13 +56,7 @@ class Preset extends React.Component {
   render() {
     return (
       <li styleName="user">
-        <p styleName="id">{this.props.preset ? this.props.preset.id : 'New preset:'}</p>
-        <input
-          type="text"
-          styleName="input"
-          value={this.state.name}
-          onChange={e => this.handleName(e)}
-        />
+        <p styleName="id">{this.props.preset ? this.props.preset._id : 'New preset:'}</p>
         <input
           type="number"
           styleName="input-small"
@@ -106,7 +94,7 @@ class Preset extends React.Component {
           <button
             styleName="user-button"
             onClick={this.props.preset
-              ? () => this.props.remove(this.props.preset.id)
+              ? () => this.props.remove(this.props.preset._id)
               : () => this.props.cancel()
             }
           >
@@ -121,8 +109,7 @@ class Preset extends React.Component {
 
 Preset.propTypes = {
   preset: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     minesCount: PropTypes.number.isRequired,
