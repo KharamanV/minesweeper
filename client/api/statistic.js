@@ -5,8 +5,13 @@ export const getStats = params => (
     .then(({ data }) => data)
 );
 
-export const getChallengeStats = () => (
+export const getChallengesStats = () => (
   request('/api/stats/challenges')
+    .then(({ data }) => data)
+);
+
+export const getStagesStats = challengeId => (
+  request(`/api/stats/challenges/${challengeId}`)
     .then(({ data }) => data)
 );
 

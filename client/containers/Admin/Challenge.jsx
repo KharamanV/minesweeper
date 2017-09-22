@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getStats } from '../../api/statistic';
-import { fethPresets } from '../../api/presets';
+import { getStats, getStagesStats } from '../../api/statistic';
 import Statistic from '../../components/Statistic';
+import AdminStage from '../../components/Admin/Stage';
 
 class AdminChallengeContainer extends Component {
   static propTypes = {
@@ -13,22 +13,26 @@ class AdminChallengeContainer extends Component {
 
   state = {
     games: [],
-    presets: [],
+    stages: [],
   };
 
   componentDidMount() {
-    const params = { challenge: this.props.match.params.id };
+    const challengeId = this.props.match.params.id;
 
-    getStats(params)
+    getStats({ challenge: challengeId })
       .then(games => this.setState({ games }));
-    fethPresets(params)
-      .then(presets => this.setState({ presets }));
+    getStagesStats(challengeId)
+      .then(stages => this.setState({ stages }));
   }
 
   render() {
+    const { games, stages } = this.state;
+
     return (
       <div>
-        <Statistic data={this.state.games} />
+        {stages.map(stage => <AdminStage data={stage} key={stage._id} />)}
+
+        <Statistic data={games} />
       </div>
     );
   }

@@ -15,10 +15,11 @@ import { setAuth } from '../../actions';
 import ChallengesContainer from '../../containers/Challenges';
 import AdminChallengeContainer from '../../containers/Admin/Challenge';
 import AdminChallengesContainer from '../../containers/Admin/Challenges';
+import ChallengeEditContainer from '../../containers/Admin/ChallengeEdit';
+import StageEditContainer from '../../containers/Admin/StageEdit';
 import ChallengePage from '../../containers/ChallengePage';
 import Statistic from '../../containers/Statistic';
 import StatisticDetail from '../../containers/StatisticDetail';
-import ChallengeEditContainer from '../../containers/Admin/ChallengeEdit';
 import Home from '../Home';
 import Panel from '../Panel';
 import Login from '../Login';
@@ -67,6 +68,7 @@ class App extends React.Component {
               component={AdminChallengeContainer}
             />
             <Route path="/admin/challenges/:id/edit" component={ChallengeEditContainer} />
+            <Route path="/admin/stages/:id/edit" component={StageEditContainer} />
             <Route
               exact
               path="/challenges"

@@ -20,6 +20,21 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json(err.message));
 });
 
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.sendStatus(404);
+  }
+
+  Preset.findById(id)
+    .select('+patChance')
+    .then(preset => res.json(preset))
+    .catch(err => res.status(500).json(err.message))
+});
+
+router.put('/:id', editPreset);
+
 router.post('/add', (req, res) => {
   Preset.create(req.body)
     .then((preset) => {
@@ -47,3 +62,15 @@ router.post('/update', (req, res) => {
 });
 
 module.exports = router;
+
+function editPreset(req, res) {
+  const { preset } = req.body;
+
+  if (!preset) {
+    return res.sendStatus(404);
+  }
+
+  Preset.findByIdAndUpdate(req.params.id, preset)
+    .then(preset => res.json(preset))
+    .catch(err => res.status(500).json(err.message));
+}

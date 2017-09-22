@@ -16,6 +16,7 @@ const gameFields = {
 
 router.get('/', getStats);
 router.get('/challenges', getChallengesStats);
+router.get('/challenges/:id', getStagesStats);
 router.get('/:id', getStatsById);
 
 module.exports = router;
@@ -77,7 +78,6 @@ async function getChallengesStats(req, res) {
 
       challenge.gamesCount = await Game.count(selector);
       challenge.playersCount = players.length;
-
       challenge.lastGame = await Game.findOne(selector)
         .select(gameFields)
         .sort('-startDate');
@@ -86,6 +86,38 @@ async function getChallengesStats(req, res) {
     }
 
     return res.json(challenges);
+  } catch (err) {
+    return res.status(500).json(err.message);
+  }
+}
+
+async function getStagesStats(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.sendStatus(404);
+    }
+
+    const { presets } = await Challenge.findById(id)
+      .populate('presets');
+
+    for (let i = 0; i < presets.length; i++) {
+      const preset = Object.assign({}, presets[i].toObject());
+      const selector = { challenge: id, stage: i };
+      const players = await Game.find(selector)
+        .distinct('user');
+
+      preset.gamesCount = await Game.count(selector);
+      preset.playersCount = players.length;
+      preset.lastGame = await Game.findOne(selector)
+        .select(gameFields)
+        .sort('-startDate');
+
+      presets[i] = preset;
+    }
+
+    return res.json(presets);
   } catch (err) {
     return res.status(500).json(err.message);
   }

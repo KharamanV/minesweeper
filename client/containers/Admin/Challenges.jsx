@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { getChallengeStats } from '../../api/statistic';
+import { getChallengesStats } from '../../api/statistic';
 import AdminChallenge from '../../components/Admin/Challenge';
 
 class AdminChallengesContainer extends Component {
   state = { challenges: [] };
 
   componentDidMount() {
-    getChallengeStats()
+    getChallengesStats()
       .then(challenges => this.setState({ challenges }));
   }
 
