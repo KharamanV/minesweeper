@@ -12,7 +12,12 @@ const AdminChallenge = ({ data }) => (
       Edit
     </Link>
 
+    <span>Games played: {data.gamesCount}</span>
+    <span>Players: {data.playersCount}</span>
+    <span>Last game: {JSON.stringify(data.lastGame)}</span>
+
     <button>Remove</button>
+    <hr />
   </div>
 );
 

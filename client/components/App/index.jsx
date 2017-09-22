@@ -9,23 +9,24 @@ import {
 } from 'react-router-dom';
 import queryString from 'query-string';
 import CSSModules from 'react-css-modules';
+import styles from './styles.css';
+import request from '../../api';
 import { setAuth } from '../../actions';
+import ChallengesContainer from '../../containers/Challenges';
+import AdminChallengeContainer from '../../containers/Admin/Challenge';
+import AdminChallengesContainer from '../../containers/Admin/Challenges';
+import ChallengePage from '../../containers/ChallengePage';
+import Statistic from '../../containers/Statistic';
+import StatisticDetail from '../../containers/StatisticDetail';
+import ChallengeEditContainer from '../../containers/Admin/ChallengeEdit';
 import Home from '../Home';
 import Panel from '../Panel';
 import Login from '../Login';
 import Register from '../Register';
 import Profile from '../Profile';
 import Header from '../Header/index';
-import ChallengesContainer from '../../containers/Challenges';
-import AdminChallengesContainer from '../../containers/Admin/Challenges';
-import ChallengePage from '../../containers/ChallengePage';
-import Statistic from '../../containers/Statistic';
-import StatisticDetail from '../../containers/StatisticDetail';
-import request from '../../api';
-import styles from './styles.css';
 import Challenge from '../Challenge';
 import AdminChallenge from '../Admin/Challenge';
-import ChallengeEditContainer from '../../containers/Admin/ChallengeEdit';
 
 class App extends React.Component {
   componentWillMount() {
@@ -58,18 +59,18 @@ class App extends React.Component {
             <Route
               exact
               path="/admin/challenges"
-              render={() => <ChallengesContainer component={AdminChallenge} />}
+              component={AdminChallengesContainer}
             />
             <Route
               exact
               path="/admin/challenges/:id"
-              component={AdminChallengesContainer}
+              component={AdminChallengeContainer}
             />
             <Route path="/admin/challenges/:id/edit" component={ChallengeEditContainer} />
             <Route
               exact
               path="/challenges"
-              render={() => <ChallengesContainer component={Challenge} />}
+              component={ChallengesContainer}
             />
             <Route path="/challenges/:id" component={ChallengePage} />
             <Route exact path="/stats" component={Statistic} />

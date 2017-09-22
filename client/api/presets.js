@@ -1,7 +1,7 @@
 import request from '.';
 
-export const fethPresets = () => (
-  request('/api/presets')
+export const fethPresets = params => (
+  request('/api/presets', { params })
     .then(({ data }) => data)
 );
 

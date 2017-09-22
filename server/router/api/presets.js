@@ -1,11 +1,23 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
 const Preset = mongoose.model('Preset');
+const Challenge = mongoose.model('Challenge');
 
 router.get('/', (req, res) => {
-  Preset.find()
+  const { challenge } = req.query;
+  let presetQuery = null;
+
+  if (challenge) {
+    return Challenge.findById(challenge)
+      .select('presets')
+      .populate('presets')
+      .then(({ presets }) => res.json(presets))
+      .catch(err => res.status(500).json(err.message))
+  }
+
+  return Preset.find()
     .then(presets => res.json(presets))
-    .catch(err => res.status(500).json({ err }));
+    .catch(err => res.status(500).json(err.message));
 });
 
 router.post('/add', (req, res) => {

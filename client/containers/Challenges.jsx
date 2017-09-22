@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { fetchChallenges } from '../api/challenges';
+import Challenge from '../components/Challenge';
 
 class ChallengesContainer extends Component {
-  static propTypes = { component: PropTypes.func.isRequired };
-
   state = { challenges: [] };
 
   componentDidMount() {
@@ -13,8 +11,6 @@ class ChallengesContainer extends Component {
   }
 
   render() {
-    const { component: Challenge } = this.props;
-
     return (
       <div>
         {this.state.challenges.map(challenge => (

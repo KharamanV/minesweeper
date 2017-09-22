@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Statistic from '../../components/Statistic';
-import { getStats } from '../../api/statistic';
+import { getChallengeStats } from '../../api/statistic';
+import AdminChallenge from '../../components/Admin/Challenge';
 
 class AdminChallengesContainer extends Component {
-  static propTypes = {
-    match: PropTypes.shape({
-      params: PropTypes.object,
-    }).isRequired,
-  };
-
-  state = { games: [] };
+  state = { challenges: [] };
 
   componentDidMount() {
-    getStats({ challenge: this.props.match.params.id })
-      .then(games => this.setState({ games }));
+    getChallengeStats()
+      .then(challenges => this.setState({ challenges }));
   }
 
   render() {
-    return <Statistic data={this.state.games} />;
+    const { challenges } = this.state;
+
+    return (
+      <div>
+        {challenges.map(challenge => (
+          <AdminChallenge data={challenge} key={challenge._id} />
+        ))}
+      </div>
+    );
   }
 }
 
