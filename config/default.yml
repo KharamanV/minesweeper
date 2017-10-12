@@ -2,5 +2,8 @@ baseUrl: localhost:3000
 port: 8080
 mongo: mongodb://localhost/minesweeper
 
+coinPaymentsKey: 3191a31ad6e35b5423a4479a37a3d5171e4adec25eefe9845ca235a333b577a3
+
 secrets:
   jwt: minesweeper_secret_token
+  coinPayments: 1CDE496eC08DADBcbCA41D478a98878A0c9da3e8c73DD2a845254E003B2cddea
